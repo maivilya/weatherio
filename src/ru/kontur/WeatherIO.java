@@ -28,6 +28,15 @@ public class WeatherIO extends JFrame {
         addSearchField();
         addSearchButton();
         addWeatherImage();
+        addTemperatureText();
+    }
+
+    private void addTemperatureText(){
+        JLabel temperature = new JLabel("25º");
+        temperature.setBounds(0, 350, 450, 55);
+        temperature.setFont(new Font(FONT_FAMILY, Font.BOLD, 48));
+        temperature.setHorizontalAlignment(SwingConstants.CENTER);
+        add(temperature);
     }
 
     private void addWeatherImage() {
