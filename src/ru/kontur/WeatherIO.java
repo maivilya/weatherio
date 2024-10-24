@@ -13,6 +13,7 @@ public class WeatherIO extends JFrame {
     private static final String FONT_FAMILY = "Roboto";
     private static final String SEARCH_RESOURCE_PATH = "src/ru/kontur/assets/search.png";
     private static final String CLOUDY_RESOURCE_PATH = "src/ru/kontur/assets/cloudy.png";
+    private static final String HUMIDITY_RESOURCE_PATH = "src/ru/kontur/assets/humidity.png";
     private static final int WIDTH = 450;
     private static final int HEIGHT = 650;
 
@@ -32,6 +33,13 @@ public class WeatherIO extends JFrame {
         addWeatherImage();
         addTemperatureText();
         addWeatherDescription();
+        addHumidityImage();
+    }
+
+    private void addHumidityImage() {
+        JLabel humidityImage = new JLabel(loadImage(HUMIDITY_RESOURCE_PATH));
+        humidityImage.setBounds(15, 500, 75, 65);
+        add(humidityImage);
     }
 
     private void addWeatherDescription() {
