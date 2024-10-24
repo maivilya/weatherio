@@ -14,6 +14,7 @@ public class WeatherIO extends JFrame {
     private static final String SEARCH_RESOURCE_PATH = "src/ru/kontur/assets/search.png";
     private static final String CLOUDY_RESOURCE_PATH = "src/ru/kontur/assets/cloudy.png";
     private static final String HUMIDITY_RESOURCE_PATH = "src/ru/kontur/assets/humidity.png";
+    private static final String WIND_SPEED_RESOURCE_PATH = "src/ru/kontur/assets/windspeed.png";
     private static final int WIDTH = 450;
     private static final int HEIGHT = 650;
 
@@ -35,6 +36,13 @@ public class WeatherIO extends JFrame {
         addWeatherDescription();
         addHumidityImage();
         addHumidityDescription();
+        addWindSpeedImage();
+    }
+
+    private void addWindSpeedImage() {
+        JLabel windSpeedImage = new JLabel(loadImage(WIND_SPEED_RESOURCE_PATH));
+        windSpeedImage.setBounds(240, 500, 75, 65);
+        add(windSpeedImage);
     }
 
     private void addHumidityDescription() {
