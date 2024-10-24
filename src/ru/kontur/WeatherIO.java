@@ -27,6 +27,13 @@ public class WeatherIO extends JFrame {
     private void addComponents() {
         addSearchField();
         addSearchButton();
+        addWeatherImage();
+    }
+
+    private void addWeatherImage() {
+        JLabel weatherConditionImage = new JLabel(loadImage("src/ru/kontur/assets/cloudy.png"));
+        weatherConditionImage.setBounds(0, 125, 450, 220);
+        add(weatherConditionImage);
     }
 
     private void addSearchButton() {
