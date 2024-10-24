@@ -29,6 +29,15 @@ public class WeatherIO extends JFrame {
         addSearchButton();
         addWeatherImage();
         addTemperatureText();
+        addWeatherDescription();
+    }
+
+    private void addWeatherDescription() {
+        JLabel weatherDescription = new JLabel("Cloudy");
+        weatherDescription.setBounds(0, 405, 450, 35);
+        weatherDescription.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
+        weatherDescription.setHorizontalAlignment(SwingConstants.CENTER);
+        add(weatherDescription);
     }
 
     private void addTemperatureText(){
