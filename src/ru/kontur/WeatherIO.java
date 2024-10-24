@@ -34,6 +34,14 @@ public class WeatherIO extends JFrame {
         addTemperatureText();
         addWeatherDescription();
         addHumidityImage();
+        addHumidityDescription();
+    }
+
+    private void addHumidityDescription() {
+        JLabel humidityDescription = new JLabel("<html><b>Humidity</b> 100%</html>");
+        humidityDescription.setBounds(90, 500, 85, 55);
+        humidityDescription.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
+        add(humidityDescription);
     }
 
     private void addHumidityImage() {
