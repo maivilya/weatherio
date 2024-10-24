@@ -11,6 +11,8 @@ public class WeatherIO extends JFrame {
 
     private static final String TITLE = "Погода";
     private static final String FONT_FAMILY = "Roboto";
+    private static final String SEARCH_RESOURCE_PATH = "src/ru/kontur/assets/search.png";
+    private static final String CLOUDY_RESOURCE_PATH = "src/ru/kontur/assets/cloudy.png";
     private static final int WIDTH = 450;
     private static final int HEIGHT = 650;
 
@@ -49,13 +51,13 @@ public class WeatherIO extends JFrame {
     }
 
     private void addWeatherImage() {
-        JLabel weatherConditionImage = new JLabel(loadImage("src/ru/kontur/assets/cloudy.png"));
+        JLabel weatherConditionImage = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
         weatherConditionImage.setBounds(0, 125, 450, 220);
         add(weatherConditionImage);
     }
 
     private void addSearchButton() {
-        JButton searchButton = new JButton(loadImage("src/ru/kontur/assets/search.png"));
+        JButton searchButton = new JButton(loadImage(SEARCH_RESOURCE_PATH));
         searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         searchButton.setBounds(375, 15, 50, 45);
         add(searchButton);
