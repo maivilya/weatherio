@@ -37,17 +37,25 @@ public class WeatherIO extends JFrame {
         addHumidityImage();
         addHumidityDescription();
         addWindSpeedImage();
+        addWindSpeedDescription();
+    }
+
+    private void addWindSpeedDescription() {
+        JLabel windSpeedDescription = new JLabel("<html><b>Wind speed</b> 3 km/h</html>");
+        windSpeedDescription.setBounds(310, 500, 85, 65);
+        windSpeedDescription.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
+        add(windSpeedDescription);
     }
 
     private void addWindSpeedImage() {
         JLabel windSpeedImage = new JLabel(loadImage(WIND_SPEED_RESOURCE_PATH));
-        windSpeedImage.setBounds(240, 500, 75, 65);
+        windSpeedImage.setBounds(220, 500, 75, 65);
         add(windSpeedImage);
     }
 
     private void addHumidityDescription() {
         JLabel humidityDescription = new JLabel("<html><b>Humidity</b> 100%</html>");
-        humidityDescription.setBounds(90, 500, 85, 55);
+        humidityDescription.setBounds(90, 500, 85, 65);
         humidityDescription.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
         add(humidityDescription);
     }
