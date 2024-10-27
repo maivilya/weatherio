@@ -40,6 +40,9 @@ public class WeatherIO extends JFrame {
         addComponents();
     }
 
+    /**
+     * Adding all objects to the main window
+     */
     private void addComponents() {
         addSearchField();
         addSearchButton();
@@ -52,19 +55,28 @@ public class WeatherIO extends JFrame {
         addWindSpeedDescription();
     }
 
+    /**
+     * Adding a (plug) wind speed description
+     */
     private void addWindSpeedDescription() {
         windSpeedDescription = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
-        windSpeedDescription.setBounds(310, 500, 110, 65);
+        windSpeedDescription.setBounds(310, 500, 140, 65);
         windSpeedDescription.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
         add(windSpeedDescription);
     }
 
+    /**
+     * Adding a (plug) wind speed image
+     */
     private void addWindSpeedImage() {
         JLabel windSpeedImage = new JLabel(loadImage(WIND_SPEED_RESOURCE_PATH));
         windSpeedImage.setBounds(220, 500, 75, 65);
         add(windSpeedImage);
     }
 
+    /**
+     * Adding a (plug) humidity description
+     */
     private void addHumidityDescription() {
         humidityDescription = new JLabel("<html><b>Влажность</b> 100%</html>");
         humidityDescription.setBounds(90, 500, 110, 65);
@@ -72,12 +84,18 @@ public class WeatherIO extends JFrame {
         add(humidityDescription);
     }
 
+    /**
+     * Adding a (plug) humidity image
+     */
     private void addHumidityImage() {
         JLabel humidityImage = new JLabel(loadImage(HUMIDITY_RESOURCE_PATH));
         humidityImage.setBounds(15, 500, 75, 65);
         add(humidityImage);
     }
 
+    /**
+     * Adding a (plug) weather description
+     */
     private void addWeatherDescription() {
         weatherDescription = new JLabel("Облачно");
         weatherDescription.setBounds(0, 405, 450, 35);
@@ -86,6 +104,9 @@ public class WeatherIO extends JFrame {
         add(weatherDescription);
     }
 
+    /**
+     * Adding a (plug) temperature text
+     */
     private void addTemperatureText(){
         temperatureText = new JLabel("25º");
         temperatureText.setBounds(0, 350, 450, 55);
@@ -94,12 +115,20 @@ public class WeatherIO extends JFrame {
         add(temperatureText);
     }
 
+    /**
+     * Adding a (plug) weather image
+     */
     private void addWeatherImage() {
         weatherConditionImage = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
         weatherConditionImage.setBounds(0, 125, 450, 220);
         add(weatherConditionImage);
     }
 
+    /**
+     * Adding a search button
+     * and assigning an event listener that will load data from APIs
+     * and place it on labels
+     */
     private void addSearchButton() {
         JButton searchButton = new JButton(loadImage(SEARCH_RESOURCE_PATH));
         searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -118,11 +147,10 @@ public class WeatherIO extends JFrame {
                 case "Дождь" -> weatherConditionImage.setIcon(loadImage(RAIN_RESOURCE_PATH));
                 case "Снег" -> weatherConditionImage.setIcon(loadImage(SNOW_RESOURCE_PATH));
             }
-            System.out.println("Weather condition: " + weatherCondition);
+            weatherDescription.setText(weatherCondition);
+
             double temperature = (double) weatherData.get("temperature");
             temperatureText.setText(temperature + "º");
-
-            weatherDescription.setText(weatherCondition);
 
             long humidity = (long) weatherData.get("humidity");
             humidityDescription.setText("<html><b>Влажность</b> " + humidity + "%</html>");
@@ -133,6 +161,9 @@ public class WeatherIO extends JFrame {
         add(searchButton);
     }
 
+    /**
+     * Adding a text search field
+     */
     private void addSearchField() {
         searchTextField = new JTextField();
         searchTextField.setBounds(15, 15, 350, 45);
@@ -140,6 +171,11 @@ public class WeatherIO extends JFrame {
         add(searchTextField);
     }
 
+    /**
+     * Uploading a photo along the way. Otherwise, null is returned
+     * @param resourcePath Path to image resource
+     * @return ImageIcon by image
+     */
     private ImageIcon loadImage(String resourcePath) {
         try {
             BufferedImage image = ImageIO.read(new File(resourcePath));
