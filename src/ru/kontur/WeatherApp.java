@@ -4,13 +4,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class WeatherApp {
@@ -27,6 +25,12 @@ public class WeatherApp {
     private static final JSONParser PARSER = new JSONParser();
     private static Scanner scanner;
 
+    /**
+     * Obtaining weather information for a specific city
+     * that was received in a request from a user
+     * @param locationName Location(city) requested by the user
+     * @return JSON object with information on a specific city
+     */
     public static JSONObject getWeatherData(String locationName) {
         JSONArray locationData = getLocationData(locationName);
         assert locationData != null;
@@ -60,12 +64,6 @@ public class WeatherApp {
 
             JSONArray weatherCodeData = (JSONArray) hourly.get(WEATHER_CODE_ENTRY);
             String weatherCondition = convertWeatherCode((long) weatherCodeData.get(index));
-            switch (weatherCondition) {
-                case "Cloudy" -> weatherCondition = "Облачно";
-                case "Rain" -> weatherCondition = "Дождь";
-                case "Clear" -> weatherCondition = "Ясно";
-                case "Snow" -> weatherCondition = "Снег";
-            }
 
             JSONArray relativeHumidityData = (JSONArray) hourly.get(HUMIDITY_ENTRY);
             long humidity = (long) relativeHumidityData.get(index);
@@ -87,6 +85,12 @@ public class WeatherApp {
         return null;
     }
 
+    /**
+     * Getting all weather information in JSON format,
+     * which will be parsed by specific entry
+     * @param connection current HttpURLConnection
+     * @return full-information JSON object
+     */
     private static StringBuilder getResultJSON(HttpURLConnection connection) {
         StringBuilder resultJSON = new StringBuilder();
         try {
@@ -103,21 +107,33 @@ public class WeatherApp {
         return resultJSON;
     }
 
+    /**
+     * Obtaining data on weather condition
+     * using weather code passed to JSON API
+     * @param weatherCode weather code passed to JSON API
+     * @return weather condition
+     */
     private static String convertWeatherCode(long weatherCode) {
         String weatherCondition = "";
         if (weatherCode == 0L) {
-            weatherCondition = "Clear";
+            weatherCondition = "Ясно";
         } else if (weatherCode > 0L && weatherCode <= 3L) {
-            weatherCondition = "Cloudy";
+            weatherCondition = "Облачно";
         } else if ((weatherCode >= 51L && weatherCode <= 67L)
                 || (weatherCode >= 80L && weatherCode <= 99L)) {
-            weatherCondition = "Rain";
+            weatherCondition = "Дождь";
         } else if (weatherCode >= 71L && weatherCode <= 77L) {
-            weatherCondition = "Snow";
+            weatherCondition = "Снег";
         }
         return weatherCondition;
     }
 
+    /**
+     * Getting the index of the current time
+     * to get the rest of the data by this index
+     * @param timeArray time array that is passed to the API
+     * @return time array index, otherwise -1
+     */
     private static int findIndexOfCurrentTime(JSONArray timeArray) {
         for (int i = 0; i < timeArray.size(); i++) {
             String time = (String) timeArray.get(i);
@@ -128,20 +144,41 @@ public class WeatherApp {
         return -1;
     }
 
+    /**
+     * Getting the current date and time
+     * in the format that is passed to the API
+     * @return current date and time in format "yyyy-MM-dd'T'HH':00'"
+     */
     private static String getCurrentTime() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH':00'");
         return currentDateTime.format(dateTimeFormatter);
     }
 
+    /**
+     * Getting the value latitude
+     * @param location Location(city) requested by the user
+     * @return double latitude
+     */
     private static double getLatitude(JSONObject location) {
         return (double) location.get("latitude");
     }
 
+    /**
+     * Getting the value longitude
+     * @param location Location(city) requested by the user
+     * @return double longitude
+     */
     private static double getLongitude(JSONObject location) {
         return (double) location.get("longitude");
     }
 
+    /**
+     * Receive weather description information
+     * for a specific city in JSON format
+     * @param locationName City name by user input
+     * @return JSONArray with entry 'results' by locationName
+     */
     private static JSONArray getLocationData(String locationName) {
         locationName = locationName.replaceAll(" ", "+");
         String url = String.format(GEOLOCATION_API_URL, locationName);
@@ -162,6 +199,11 @@ public class WeatherApp {
         return null;
     }
 
+    /**
+     * Getting HttpUrlConnection, sending a GET request to test the connection
+     * @param urlString API connection link(url)
+     * @return HttpURLConnection, otherwise, null
+     */
     private static HttpURLConnection fetchApiResponse(String urlString) {
         try {
             URL url = new URL(urlString);
