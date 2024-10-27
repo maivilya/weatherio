@@ -57,6 +57,12 @@ public class WeatherApp {
             // TODO: метод для получения данных о состоянии погоды
             JSONArray weatherCodeData = (JSONArray) hourly.get("weather_code");
             String weatherCondition = convertWeatherCode((long) weatherCodeData.get(index));
+            switch (weatherCondition) {
+                case "Cloudy" -> weatherCondition = "Облачно";
+                case "Rain" -> weatherCondition = "Дождь";
+                case "Clear" -> weatherCondition = "Ясно";
+                case "Snow" -> weatherCondition = "Снег";
+            }
 
             // TODO: метод для получения данных влажности воздуха
             JSONArray relativeHumidityData = (JSONArray) hourly.get("relative_humidity_2m");
