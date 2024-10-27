@@ -16,6 +16,7 @@ public class WeatherApp {
 
     private static final String CONNECTION_ERROR_MESSAGE = "ERROR: Could not connect to the API";
     private static final String GEOLOCATION_API_URL = "https://geocoding-api.open-meteo.com/v1/search?name=%s&count=10&language=ru&format=json";
+    private static Scanner scanner;
 
     public static JSONObject getWeatherData(String locationName) {
         JSONArray locationData = getLocationData(locationName);
@@ -23,7 +24,11 @@ public class WeatherApp {
         String url = "https://api.open-meteo.com/v1/forecast?" +
                         "latitude=" + getLatitude(location) +
                         "&longitude=" + getLongitude(location) +
-                        "&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=America%2FLos_Angeles";
+                        "&hourly=temperature_2m," +
+                        "relative_humidity_2m," +
+                        "weather_code," +
+                        "wind_speed_10m" +
+                        "&timezone=America%2FLos_Angeles";
 
         try {
             HttpURLConnection connection = fetchApiResponse(url);
@@ -31,15 +36,7 @@ public class WeatherApp {
                 System.out.println(CONNECTION_ERROR_MESSAGE);
                 return null;
             }
-
-            // TODO: метод для получения полного JSON
-            StringBuilder resultJSON = new StringBuilder();
-            Scanner scanner = new Scanner(connection.getInputStream());
-            while(scanner.hasNext()) {
-                resultJSON.append(scanner.nextLine());
-            }
-            scanner.close();
-            connection.disconnect();
+            StringBuilder resultJSON = getResultJSON(connection);
 
             // TODO: parser для получения определенного результата. e.g: "results", "hourly" e.t.c
             JSONParser parser = new JSONParser();
@@ -84,6 +81,22 @@ public class WeatherApp {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    private static StringBuilder getResultJSON(HttpURLConnection connection) {
+        StringBuilder resultJSON = new StringBuilder();
+        try {
+            scanner = new Scanner(connection.getInputStream());
+            while(scanner.hasNext()) {
+                resultJSON.append(scanner.nextLine());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            scanner.close();
+            connection.disconnect();
+        }
+        return resultJSON;
     }
 
     private static String convertWeatherCode(long weatherCode) {
@@ -135,14 +148,7 @@ public class WeatherApp {
                 System.out.println(CONNECTION_ERROR_MESSAGE);
                 return null;
             } else {
-                // TODO: метод для получения полного JSON
-                StringBuilder resultJSON = new StringBuilder();
-                Scanner scanner = new Scanner(connection.getInputStream());
-                while(scanner.hasNext()) {
-                    resultJSON.append(scanner.nextLine());
-                }
-                scanner.close();
-                connection.disconnect();
+                StringBuilder resultJSON = getResultJSON(connection);
 
                 // TODO: parser для получения определенного результата. e.g: "results", "hourly" e.t.c
                 JSONParser parser = new JSONParser();
