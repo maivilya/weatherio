@@ -10,16 +10,26 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class WeatherApp {
 
+    private static final String HOURLY_ENTRY = "hourly";
+    private static final String TIME_ENTRY = "time";
+    private static final String TEMPERATURE_ENTRY = "temperature_2m";
+    private static final String WEATHER_CODE_ENTRY = "weather_code";
+    private static final String HUMIDITY_ENTRY = "relative_humidity_2m";
+    private static final String WIND_SPEED_ENTRY = "wind_speed_10m";
+    private static final String RESULTS_ENTRY = "results";
     private static final String CONNECTION_ERROR_MESSAGE = "ERROR: Could not connect to the API";
     private static final String GEOLOCATION_API_URL = "https://geocoding-api.open-meteo.com/v1/search?name=%s&count=10&language=ru&format=json";
+    private static final JSONParser PARSER = new JSONParser();
     private static Scanner scanner;
 
     public static JSONObject getWeatherData(String locationName) {
         JSONArray locationData = getLocationData(locationName);
+        assert locationData != null;
         JSONObject location = (JSONObject) locationData.get(0);
         String url = "https://api.open-meteo.com/v1/forecast?" +
                         "latitude=" + getLatitude(location) +
@@ -32,27 +42,23 @@ public class WeatherApp {
 
         try {
             HttpURLConnection connection = fetchApiResponse(url);
+            assert connection != null;
             if (connection.getResponseCode() != 200) {
                 System.out.println(CONNECTION_ERROR_MESSAGE);
                 return null;
             }
             StringBuilder resultJSON = getResultJSON(connection);
 
-            // TODO: parser для получения определенного результата. e.g: "results", "hourly" e.t.c
-            JSONParser parser = new JSONParser();
-            JSONObject resultJSONObj = (JSONObject) parser.parse(String.valueOf(resultJSON));
+            JSONObject resultJSONObj = (JSONObject) PARSER.parse(String.valueOf(resultJSON));
 
-            // TODO: метод для получения текущих временных данных
-            JSONObject hourly = (JSONObject) resultJSONObj.get("hourly");
-            JSONArray timeData = (JSONArray) hourly.get("time");
+            JSONObject hourly = (JSONObject) resultJSONObj.get(HOURLY_ENTRY);
+            JSONArray timeData = (JSONArray) hourly.get(TIME_ENTRY);
             int index = findIndexOfCurrentTime(timeData);
 
-            // TODO: метод для получения данных о температуре
-            JSONArray temperatureData = (JSONArray) hourly.get("temperature_2m");
+            JSONArray temperatureData = (JSONArray) hourly.get(TEMPERATURE_ENTRY);
             double temperature = (double) temperatureData.get(index);
 
-            // TODO: метод для получения данных о состоянии погоды
-            JSONArray weatherCodeData = (JSONArray) hourly.get("weather_code");
+            JSONArray weatherCodeData = (JSONArray) hourly.get(WEATHER_CODE_ENTRY);
             String weatherCondition = convertWeatherCode((long) weatherCodeData.get(index));
             switch (weatherCondition) {
                 case "Cloudy" -> weatherCondition = "Облачно";
@@ -61,12 +67,10 @@ public class WeatherApp {
                 case "Snow" -> weatherCondition = "Снег";
             }
 
-            // TODO: метод для получения данных влажности воздуха
-            JSONArray relativeHumidityData = (JSONArray) hourly.get("relative_humidity_2m");
+            JSONArray relativeHumidityData = (JSONArray) hourly.get(HUMIDITY_ENTRY);
             long humidity = (long) relativeHumidityData.get(index);
 
-            // TODO: метод для получения данных скорости ветра
-            JSONArray windSpeedData = (JSONArray) hourly.get("wind_speed_10m");
+            JSONArray windSpeedData = (JSONArray) hourly.get(WIND_SPEED_ENTRY);
             double windSpeed = (double) windSpeedData.get(index);
 
             JSONObject resultWeatherData = new JSONObject();
@@ -149,13 +153,8 @@ public class WeatherApp {
                 return null;
             } else {
                 StringBuilder resultJSON = getResultJSON(connection);
-
-                // TODO: parser для получения определенного результата. e.g: "results", "hourly" e.t.c
-                JSONParser parser = new JSONParser();
-                JSONObject resultJSONObj = (JSONObject) parser.parse(String.valueOf(resultJSON));
-
-                JSONArray locationData = (JSONArray) resultJSONObj.get("results");
-                return locationData;
+                JSONObject resultJSONObj = (JSONObject) PARSER.parse(String.valueOf(resultJSON));
+                return (JSONArray) resultJSONObj.get(RESULTS_ENTRY);
             }
         } catch (Exception exception) {
             exception.printStackTrace();
