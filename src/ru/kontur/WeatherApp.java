@@ -4,6 +4,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -21,6 +23,7 @@ public class WeatherApp {
     private static final String WIND_SPEED_ENTRY = "wind_speed_10m";
     private static final String RESULTS_ENTRY = "results";
     private static final String CONNECTION_ERROR_MESSAGE = "ERROR: Could not connect to the API";
+    private static final String CITY_NAME_ERROR_MESSAGE = "Нет города с таким названием!";
     private static final String GEOLOCATION_API_URL = "https://geocoding-api.open-meteo.com/v1/search?name=%s&count=10&language=ru&format=json";
     private static final JSONParser PARSER = new JSONParser();
     private static Scanner scanner;
@@ -33,7 +36,12 @@ public class WeatherApp {
      */
     public static JSONObject getWeatherData(String locationName) {
         JSONArray locationData = getLocationData(locationName);
-        assert locationData != null;
+        if (locationData == null) {
+            showErrorMessage(CITY_NAME_ERROR_MESSAGE);
+            System.out.println(CITY_NAME_ERROR_MESSAGE);
+            return null;
+        }
+
         JSONObject location = (JSONObject) locationData.get(0);
         String url = "https://api.open-meteo.com/v1/forecast?" +
                         "latitude=" + getLatitude(location) +
@@ -48,6 +56,7 @@ public class WeatherApp {
             HttpURLConnection connection = fetchApiResponse(url);
             assert connection != null;
             if (connection.getResponseCode() != 200) {
+                showErrorMessage(CONNECTION_ERROR_MESSAGE);
                 System.out.println(CONNECTION_ERROR_MESSAGE);
                 return null;
             }
@@ -83,6 +92,10 @@ public class WeatherApp {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    private static void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(new JFrame(), message, "Ошибка", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
