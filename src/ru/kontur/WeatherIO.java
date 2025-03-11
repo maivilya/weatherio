@@ -133,7 +133,7 @@ public class WeatherIO extends JFrame {
 
     /**
      * Deleting a city from the favorites list
-     * @param cityName - the city you want to remove from the favorites list
+     * @param cityName the city you want to remove from the favorites list
      */
     private void removeCityFromFavorites(String cityName) {
         try {
@@ -261,7 +261,7 @@ public class WeatherIO extends JFrame {
 
     /**
      * Uploading a photo along the way. Otherwise, null is returned
-     * @param resourcePath - path to image resource
+     * @param resourcePath path to image resource
      * @return ImageIcon by image
      */
     private ImageIcon loadImage(String resourcePath) {
