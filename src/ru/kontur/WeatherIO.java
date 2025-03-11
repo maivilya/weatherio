@@ -50,6 +50,9 @@ public class WeatherIO extends JFrame {
         updateFavoriteList();
     }
 
+    /**
+     * Adding all objects to the main window
+     */
     private void addComponents() {
         addSearchField();
         addSearchButton();
@@ -64,6 +67,9 @@ public class WeatherIO extends JFrame {
         addBtnAddCity();
     }
 
+    /**
+     * Updating the list with favorite locations
+     */
     private void updateFavoriteList() {
         try {
             List<String> favorites = favoriteService.getFavorites();
@@ -76,6 +82,9 @@ public class WeatherIO extends JFrame {
         }
     }
 
+    /**
+     * Adding a button to show favorites cities
+     */
     private void addBtnShowFavorites() {
         btnShowFavorites = new JButton(loadImage(FAVORITES_ICON_PATH)); // Иконка для избранных
         btnShowFavorites.setBounds(375, 70, 45, 45);
@@ -86,6 +95,9 @@ public class WeatherIO extends JFrame {
         add(btnShowFavorites);
     }
 
+    /**
+     * Display a list with favorite locations
+     */
     private void showFavoritesList() {
         JPopupMenu popupMenu = new JPopupMenu();
         for (int i = 0; i < listModel.size(); i++) {
@@ -119,15 +131,22 @@ public class WeatherIO extends JFrame {
         popupMenu.show(btnShowFavorites, 0, btnShowFavorites.getHeight());
     }
 
-    private void removeCityFromFavorites(String city) {
+    /**
+     * Deleting a city from the favorites list
+     * @param cityName - the city you want to remove from the favorites list
+     */
+    private void removeCityFromFavorites(String cityName) {
         try {
-            favoriteService.removeCityFromFavorites(city);
+            favoriteService.removeCityFromFavorites(cityName);
             updateFavoriteList();
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
     }
 
+    /**
+     * Adding a button to add a city
+     */
     private void addBtnAddCity() {
         JButton btnAddCity = new JButton("Добавить город");
         btnAddCity.setBounds(220, 70, 150, 30);
@@ -145,6 +164,9 @@ public class WeatherIO extends JFrame {
         add(btnAddCity);
     }
 
+    /**
+     * Adding a wind speed description
+     */
     private void addWindSpeedDescription() {
         windSpeedDescription = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
         windSpeedDescription.setBounds(310, 500, 140, 65);
@@ -152,12 +174,18 @@ public class WeatherIO extends JFrame {
         add(windSpeedDescription);
     }
 
+    /**
+     * Adding a wind speed image
+     */
     private void addWindSpeedImage() {
         JLabel windSpeedImage = new JLabel(loadImage(WIND_SPEED_RESOURCE_PATH));
         windSpeedImage.setBounds(220, 500, 75, 65);
         add(windSpeedImage);
     }
 
+    /**
+     * Adding a humidity description
+     */
     private void addHumidityDescription() {
         humidityDescription = new JLabel("<html><b>Влажность</b> 100%</html>");
         humidityDescription.setBounds(90, 500, 110, 65);
@@ -165,12 +193,18 @@ public class WeatherIO extends JFrame {
         add(humidityDescription);
     }
 
+    /**
+     * Adding a humidity image
+     */
     private void addHumidityImage() {
         JLabel humidityImage = new JLabel(loadImage(HUMIDITY_RESOURCE_PATH));
         humidityImage.setBounds(15, 500, 75, 65);
         add(humidityImage);
     }
 
+    /**
+     * Adding a weather description
+     */
     private void addWeatherDescription() {
         weatherDescription = new JLabel("Облачно");
         weatherDescription.setBounds(0, 405, 450, 35);
@@ -179,6 +213,9 @@ public class WeatherIO extends JFrame {
         add(weatherDescription);
     }
 
+    /**
+     * Adding a temperature text
+     */
     private void addTemperatureText() {
         temperatureText = new JLabel("25º");
         temperatureText.setBounds(0, 350, 450, 55);
@@ -187,12 +224,20 @@ public class WeatherIO extends JFrame {
         add(temperatureText);
     }
 
+    /**
+     * Adding a weather image
+     */
     private void addWeatherImage() {
         weatherConditionImage = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
         weatherConditionImage.setBounds(0, 125, 450, 220);
         add(weatherConditionImage);
     }
 
+    /**
+     * Adding a search button
+     * and assigning an event listener that will load data from APIs
+     * and place it on labels
+     */
     private void addSearchButton() {
         JButton searchButton = new JButton(loadImage(SEARCH_RESOURCE_PATH));
         searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -204,6 +249,9 @@ public class WeatherIO extends JFrame {
         add(searchButton);
     }
 
+    /**
+     * Adding a text search field
+     */
     private void addSearchField() {
         searchTextField = new JTextField();
         searchTextField.setBounds(15, 15, 350, 45);
@@ -211,6 +259,11 @@ public class WeatherIO extends JFrame {
         add(searchTextField);
     }
 
+    /**
+     * Uploading a photo along the way. Otherwise, null is returned
+     * @param resourcePath - path to image resource
+     * @return ImageIcon by image
+     */
     private ImageIcon loadImage(String resourcePath) {
         try {
             BufferedImage image = ImageIO.read(new File(resourcePath));
