@@ -10,9 +10,9 @@ import java.util.List;
 public class FavoriteService {
 
     /**
-     * Добавляет город в список избранных
-     * @param cityName - название города или локации
-     * @throws SQLException если город с указаным названием не найден в списке избранных
+     * Adding a city to the list of favorite locations
+     * @param cityName city or location
+     * @throws SQLException if the city with the specified name is not found in the list of favorites
      */
     public void addCityToFavorites(String cityName) throws SQLException {
         String query = "INSERT INTO favorite (city_name) VALUES (?) ON CONFLICT (city_name) DO NOTHING";
@@ -24,9 +24,9 @@ public class FavoriteService {
     }
 
     /**
-     * Получает все города из списка избранных
-     * @return список с избранными городами
-     * @throws SQLException при ошибке подключения к базе данных
+     * Retrieve all cities from the favorites list
+     * @return favorites list
+     * @throws SQLException in case of database connection error
      */
     public List<String> getFavorites() throws SQLException {
         List<String> favorites = new ArrayList<>();
@@ -42,9 +42,9 @@ public class FavoriteService {
     }
 
     /**
-     * Удаляет город из списка избранных
-     * @param cityName - название города или локации
-     * @throws SQLException если город с указаным названием не найден в списке избранных
+     * Deleting a city from the favorites list
+     * @param cityName city or location
+     * @throws SQLException if the city with the specified name is not found in the list of favorites
      */
     public void removeCityFromFavorites(String cityName) throws SQLException {
         String query = "DELETE FROM favorite WHERE city_name = ?";
