@@ -57,14 +57,10 @@ public class WeatherApp {
 
             long humidity = (long) main.get("humidity");
 
-            JSONObject wind = (JSONObject) resultJSONObj.get("wind");
-            long windSpeed = (long) wind.get("speed");
-
             JSONObject weatherData = new JSONObject();
             weatherData.put("temperature", temperature);
             weatherData.put("weatherCondition", weatherCondition);
             weatherData.put("humidity", humidity);
-            weatherData.put("windSpeed", windSpeed);
             return weatherData;
         } catch (IOException | ParseException e) {
             e.printStackTrace();
