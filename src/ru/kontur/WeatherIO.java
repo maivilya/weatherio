@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class WeatherIO extends JFrame {
@@ -17,6 +18,7 @@ public class WeatherIO extends JFrame {
     private static final String FONT_FAMILY = "Roboto";
     private static final int WIDTH = 1300;
     private static final int HEIGHT = 750;
+
     private static final String SEARCH_RESOURCE_PATH = "src/ru/kontur/assets/search.png";
     private static final String FAVORITES_ICON_PATH = "src/ru/kontur/assets/favorite.png";
     private static final String CLEAR_RESOURCE_PATH = "src/ru/kontur/assets/clear.png";
@@ -25,14 +27,15 @@ public class WeatherIO extends JFrame {
     private static final String SNOW_RESOURCE_PATH = "src/ru/kontur/assets/snow.png";
     private static final String HUMIDITY_RESOURCE_PATH = "src/ru/kontur/assets/humidity.png";
     private static final String WIND_SPEED_RESOURCE_PATH = "src/ru/kontur/assets/windSpeed.png";
+
     private static JTextField searchTextField;
-    private static JSONObject weatherData;
     private JLabel apiWeatherConditionImage1, apiWeatherConditionImage2, apiWeatherConditionImage3;
     private JLabel apiTemperatureText1, apiTemperatureText2, apiTemperatureText3;
     private JLabel apiWeatherDescription1, apiWeatherDescription2, apiWeatherDescription3;
     private JLabel apiHumidityDescription1, apiHumidityDescription2, apiHumidityDescription3;
     private JLabel apiWindSpeedDescription1, apiWindSpeedDescription2, apiWindSpeedDescription3;
     private JLabel averageTemperatureText;
+
     private final FavoriteService favoriteService;
     private final DefaultListModel<String> listModel;
     private JButton btnShowFavorites;
@@ -47,6 +50,7 @@ public class WeatherIO extends JFrame {
         setLayout(null);
         setResizable(false);
         addComponents();
+        getWeather("Yekaterinburg");
         updateFavoriteList();
     }
 
@@ -128,7 +132,6 @@ public class WeatherIO extends JFrame {
 
             popupMenu.add(menuItem);
         }
-
         popupMenu.show(btnShowFavorites, 0, btnShowFavorites.getHeight());
     }
 
@@ -360,56 +363,53 @@ public class WeatherIO extends JFrame {
         if (cityName.replaceAll("\\s", "").length() == 0) {
             return;
         }
-        weatherData = WeatherApp.getWeatherData(cityName);
-        assert weatherData != null;
+        JSONObject weatherData = WeatherApp.getWeatherDataFromWeatherMeteo(cityName);
+        JSONObject weatherData2 = WeatherApp.getWeatherDataFromWeatherApi(cityName);
+        JSONObject weatherData3 = WeatherApp.getWeatherDataFromOpenWeatherMap(cityName);
         String weatherCondition = (String) weatherData.get("weatherCondition");
         switch (weatherCondition) {
-            case "Ясно" -> apiWeatherConditionImage1.setIcon(loadImage(CLEAR_RESOURCE_PATH));
-            case "Облачно" -> apiWeatherConditionImage1.setIcon(loadImage(CLOUDY_RESOURCE_PATH));
-            case "Дождь" -> apiWeatherConditionImage1.setIcon(loadImage(RAIN_RESOURCE_PATH));
-            case "Снег" -> apiWeatherConditionImage1.setIcon(loadImage(SNOW_RESOURCE_PATH));
+            case "Ясно" -> {
+                apiWeatherConditionImage1.setIcon(loadImage(CLEAR_RESOURCE_PATH));
+                apiWeatherConditionImage2.setIcon(loadImage(CLEAR_RESOURCE_PATH));
+                apiWeatherConditionImage3.setIcon(loadImage(CLEAR_RESOURCE_PATH));
+            }
+            case "Облачно" -> {
+                apiWeatherConditionImage1.setIcon(loadImage(CLOUDY_RESOURCE_PATH));
+                apiWeatherConditionImage2.setIcon(loadImage(CLOUDY_RESOURCE_PATH));
+                apiWeatherConditionImage3.setIcon(loadImage(CLOUDY_RESOURCE_PATH));
+            }
+            case "Дождь" -> {
+                apiWeatherConditionImage1.setIcon(loadImage(RAIN_RESOURCE_PATH));
+                apiWeatherConditionImage2.setIcon(loadImage(RAIN_RESOURCE_PATH));
+                apiWeatherConditionImage3.setIcon(loadImage(RAIN_RESOURCE_PATH));
+            }
+            case "Снег" -> {
+                apiWeatherConditionImage1.setIcon(loadImage(SNOW_RESOURCE_PATH));
+                apiWeatherConditionImage2.setIcon(loadImage(SNOW_RESOURCE_PATH));
+                apiWeatherConditionImage3.setIcon(loadImage(SNOW_RESOURCE_PATH));
+            }
         }
         apiWeatherDescription1.setText(weatherCondition);
+        apiWeatherDescription2.setText(weatherCondition);
+        apiWeatherDescription3.setText(weatherCondition);
 
-        double temperature = (double) weatherData.get("temperature");
-        apiTemperatureText1.setText(temperature + "º");
+        DecimalFormat decimalFormat = new DecimalFormat( "#.#" );
+        double temperature1 = (double) weatherData.get("temperature");
+        double temperature2 = (double) weatherData2.get("temperature");
+        double temperature3 = (double) weatherData3.get("temperature");
+        apiTemperatureText1.setText(decimalFormat.format(temperature1) + "º");
+        apiTemperatureText2.setText(decimalFormat.format(temperature2) + "º");
+        apiTemperatureText3.setText(decimalFormat.format(temperature3) + "º");
 
-        long humidity = (long) weatherData.get("humidity");
-        apiHumidityDescription1.setText("<html><b>Влажность</b> " + humidity + "%</html>");
+        apiHumidityDescription1.setText("<html><b>Влажность</b> " + weatherData.get("humidity") + "%</html>");
+        apiHumidityDescription2.setText("<html><b>Влажность</b> " + weatherData2.get("humidity") + "%</html>");
+        apiHumidityDescription3.setText("<html><b>Влажность</b> " + weatherData3.get("humidity") + "%</html>");
 
-        double windSpeed = (double) weatherData.get("windSpeed");
-        apiWindSpeedDescription1.setText("<html><b>Скорость ветра</b> " + windSpeed + "км/ч</html>");
+        apiWindSpeedDescription1.setText("<html><b>Скорость ветра</b> " + weatherData.get("windSpeed") + "км/ч</html>");
+        apiWindSpeedDescription2.setText("<html><b>Скорость ветра</b> " + weatherData2.get("windSpeed") + "км/ч</html>");
+        apiWindSpeedDescription3.setText("<html><b>Скорость ветра</b> " + weatherData3.get("windSpeed") + "км/ч</html>");
+
+        double averageTemperature = (temperature1 + temperature2 + temperature3) / 3;
+        averageTemperatureText.setText("Средняя температура: " + decimalFormat.format(averageTemperature) + "º");
     }
-
-    /*private void getWeather(String cityName) {
-        if (cityName.replaceAll("\\s", "").length() == 0) {
-            return;
-        }
-        JSONObject weatherData1 = WeatherApp.getWeatherData(cityName);
-        JSONObject weatherData2 = WeatherApp.getWeatherDataFromWeatherAPI(cityName);
-        //JSONObject weatherData3 = WeatherApp.getWeatherDataFromAccuWeather(cityName);
-
-        String weatherCondition = (String) weatherData1.get("weatherCondition");
-        switch (weatherCondition) {
-            case "Ясно" -> weatherConditionImage.setIcon(loadImage(CLEAR_RESOURCE_PATH));
-            case "Облачно" -> weatherConditionImage.setIcon(loadImage(CLOUDY_RESOURCE_PATH));
-            case "Дождь" -> weatherConditionImage.setIcon(loadImage(RAIN_RESOURCE_PATH));
-            case "Снег" -> weatherConditionImage.setIcon(loadImage(SNOW_RESOURCE_PATH));
-        }
-
-        if (weatherData1 != null && weatherData2 != null) {
-            // Обновляем текстовые метки для каждого API
-            api1TemperatureText.setText("WeatherMeteo: " + weatherData1.get("temperature") + "º");
-            api2TemperatureText.setText("WeatherAPI: " + weatherData2.get("temperature") + "º");
-            //api3TemperatureText.setText("AccuWeather: " + weatherData3.get("temperature") + "º");
-
-            // Вычисляем среднюю температуру
-            double avgTemp = (
-                    (double) weatherData1.get("temperature") +
-                            (double) weatherData2.get("temperature")
-            ) / 2;
-            averageTemperatureText.setText("Средняя температура: " + avgTemp + "º");
-        }
-    }*/
-
 }
