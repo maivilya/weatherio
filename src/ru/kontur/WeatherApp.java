@@ -4,7 +4,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import javax.swing.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -22,9 +21,13 @@ public class WeatherApp {
     private static final String HUMIDITY_ENTRY = "relative_humidity_2m";
     private static final String WIND_SPEED_ENTRY = "wind_speed_10m";
     private static final String RESULTS_ENTRY = "results";
-    private static final String CONNECTION_ERROR_MESSAGE = "ERROR: Could not connect to the API";
+    private static final String CONNECTION_ERROR_MESSAGE = "Ошибка: невозможно подключиться к API";
     private static final String CITY_NAME_ERROR_MESSAGE = "Нет города с таким названием!";
-    private static final String GEOLOCATION_API_URL = "https://geocoding-api.open-meteo.com/v1/search?name=%s&count=10&language=ru&format=json";
+    private static final String WEATHER_METEO_API_URL = "https://geocoding-api.open-meteo.com/v1/search?name=%s&count=10&language=ru&format=json";
+    private static final String WEATHER_API_URL = "http://api.weatherapi.com/v1/current.json?key=%s&q=%s&lang=ru";
+    private static final String OPEN_WEATHER_MAP_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric&lang=ru";
+    private static final String WEATHER_API_KEY = "41582deb5d84437183f81730251303";
+    private static final String OPEN_WEATHER_MAP_API_KEY = "0fe00a1237c1788b7616dcf8ea456a26";
     private static final JSONParser PARSER = new JSONParser();
     private static Scanner scanner;
 
@@ -34,7 +37,89 @@ public class WeatherApp {
      * @param locationName Location(city) requested by the user
      * @return JSON object with information on a specific city
      */
-    public static JSONObject getWeatherData(String locationName) {
+    public static JSONObject getWeatherDataFromOpenWeatherMap(String locationName) {
+        String url = String.format(OPEN_WEATHER_MAP_URL, locationName, OPEN_WEATHER_MAP_API_KEY);
+        try {
+            HttpURLConnection connection = fetchApiResponse(url);
+            if (connection == null || connection.getResponseCode() != 200) {
+                showErrorMessage(CONNECTION_ERROR_MESSAGE);
+                System.out.println(CONNECTION_ERROR_MESSAGE);
+                return null;
+            }
+            StringBuilder resultJSON = getResultJSON(connection);
+            JSONObject resultJSONObj = (JSONObject) PARSER.parse(String.valueOf(resultJSON));
+
+            JSONObject main = (JSONObject) resultJSONObj.get("main");
+            double temperature = (double) main.get("temp");
+
+            JSONObject weather = (JSONObject) ((JSONArray) resultJSONObj.get("weather")).get(0);
+            String weatherCondition = (String) weather.get("description");
+
+            long humidity = (long) main.get("humidity");
+
+            JSONObject wind = (JSONObject) resultJSONObj.get("wind");
+            long windSpeed = (long) wind.get("speed");
+
+            JSONObject weatherData = new JSONObject();
+            weatherData.put("temperature", temperature);
+            weatherData.put("weatherCondition", weatherCondition);
+            weatherData.put("humidity", humidity);
+            weatherData.put("windSpeed", windSpeed);
+            return weatherData;
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Obtaining weather information for a specific city
+     * that was received in a request from a user
+     * @param locationName Location(city) requested by the user
+     * @return JSON object with information on a specific city
+     */
+    public static JSONObject getWeatherDataFromWeatherApi(String locationName) {
+        String url = String.format(WEATHER_API_URL, WEATHER_API_KEY, locationName);
+        try {
+            HttpURLConnection connection = fetchApiResponse(url);
+            if (connection == null || connection.getResponseCode() != 200) {
+                showErrorMessage(CONNECTION_ERROR_MESSAGE);
+                System.out.println(CONNECTION_ERROR_MESSAGE);
+                return null;
+            }
+            StringBuilder resultJSON = getResultJSON(connection);
+            JSONObject resultJSONObj = (JSONObject) PARSER.parse(String.valueOf(resultJSON));
+
+            JSONObject current = (JSONObject) resultJSONObj.get("current");
+
+            double temperature = (double) current.get("temp_c");
+
+            JSONObject condition = (JSONObject) current.get("condition");
+            String weatherCondition = (String) condition.get("text");
+
+            long humidity = (long) current.get("humidity");
+
+            double windSpeed = (double) current.get("wind_kph");
+
+            JSONObject weatherData = new JSONObject();
+            weatherData.put("temperature", temperature);
+            weatherData.put("weatherCondition", weatherCondition);
+            weatherData.put("humidity", humidity);
+            weatherData.put("windSpeed", windSpeed);
+            return weatherData;
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Obtaining weather information for a specific city
+     * that was received in a request from a user
+     * @param locationName Location(city) requested by the user
+     * @return JSON object with information on a specific city
+     */
+    public static JSONObject getWeatherDataFromWeatherMeteo(String locationName) {
         JSONArray locationData = getLocationData(locationName);
         if (locationData == null) {
             showErrorMessage(CITY_NAME_ERROR_MESSAGE);
@@ -44,13 +129,13 @@ public class WeatherApp {
 
         JSONObject location = (JSONObject) locationData.get(0);
         String url = "https://api.open-meteo.com/v1/forecast?" +
-                        "latitude=" + getLatitude(location) +
-                        "&longitude=" + getLongitude(location) +
-                        "&hourly=temperature_2m," +
-                        "relative_humidity_2m," +
-                        "weather_code," +
-                        "wind_speed_10m" +
-                        "&timezone=America%2FLos_Angeles";
+                "latitude=" + getLatitude(location) +
+                "&longitude=" + getLongitude(location) +
+                "&hourly=temperature_2m," +
+                "relative_humidity_2m," +
+                "weather_code," +
+                "wind_speed_10m" +
+                "&timezone=America%2FLos_Angeles";
 
         try {
             HttpURLConnection connection = fetchApiResponse(url);
@@ -101,6 +186,7 @@ public class WeatherApp {
     /**
      * Getting all weather information in JSON format,
      * which will be parsed by specific entry
+     *
      * @param connection current HttpURLConnection
      * @return full-information JSON object
      */
@@ -108,7 +194,7 @@ public class WeatherApp {
         StringBuilder resultJSON = new StringBuilder();
         try {
             scanner = new Scanner(connection.getInputStream());
-            while(scanner.hasNext()) {
+            while (scanner.hasNext()) {
                 resultJSON.append(scanner.nextLine());
             }
         } catch (IOException e) {
@@ -123,6 +209,7 @@ public class WeatherApp {
     /**
      * Obtaining data on weather condition
      * using weather code passed to JSON API
+     *
      * @param weatherCode weather code passed to JSON API
      * @return weather condition
      */
@@ -144,6 +231,7 @@ public class WeatherApp {
     /**
      * Getting the index of the current time
      * to get the rest of the data by this index
+     *
      * @param timeArray time array that is passed to the API
      * @return time array index, otherwise -1
      */
@@ -160,6 +248,7 @@ public class WeatherApp {
     /**
      * Getting the current date and time
      * in the format that is passed to the API
+     *
      * @return current date and time in format "yyyy-MM-dd'T'HH':00'"
      */
     private static String getCurrentTime() {
@@ -170,6 +259,7 @@ public class WeatherApp {
 
     /**
      * Getting the value latitude
+     *
      * @param location Location(city) requested by the user
      * @return double latitude
      */
@@ -179,6 +269,7 @@ public class WeatherApp {
 
     /**
      * Getting the value longitude
+     *
      * @param location Location(city) requested by the user
      * @return double longitude
      */
@@ -194,7 +285,7 @@ public class WeatherApp {
      */
     private static JSONArray getLocationData(String locationName) {
         locationName = locationName.replaceAll(" ", "+");
-        String url = String.format(GEOLOCATION_API_URL, locationName);
+        String url = String.format(WEATHER_METEO_API_URL, locationName);
         try {
             HttpURLConnection connection = fetchApiResponse(url);
             assert connection != null;
@@ -214,6 +305,7 @@ public class WeatherApp {
 
     /**
      * Getting HttpUrlConnection, sending a GET request to test the connection
+     *
      * @param urlString API connection link(url)
      * @return HttpURLConnection, otherwise, null
      */
