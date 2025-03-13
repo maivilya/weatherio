@@ -70,6 +70,7 @@ public class WeatherIO extends JFrame {
         addBtnShowFavorites();
         addBtnAddCity();
         addAverageTemperatureText();
+        addApiDescription();
     }
 
     /**
@@ -255,6 +256,29 @@ public class WeatherIO extends JFrame {
     }
 
     /**
+     * Adding a API description
+     */
+    private void addApiDescription() {
+        JLabel apiDescription1 = new JLabel("WeatherMeteo");
+        apiDescription1.setBounds(0, 110, 450, 35);
+        apiDescription1.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
+        apiDescription1.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel apiDescription2 = new JLabel("WeatherAPI");
+        apiDescription2.setBounds(400, 110, 450, 35);
+        apiDescription2.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
+        apiDescription2.setHorizontalAlignment(SwingConstants.CENTER);
+
+        JLabel apiDescription3 = new JLabel("OpenWeatherMap");
+        apiDescription3.setBounds(800, 110, 450, 35);
+        apiDescription3.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
+        apiDescription3.setHorizontalAlignment(SwingConstants.CENTER);
+        add(apiDescription1);
+        add(apiDescription2);
+        add(apiDescription3);
+    }
+
+    /**
      * Adding a weather description
      */
     private void addWeatherDescription() {
@@ -407,7 +431,7 @@ public class WeatherIO extends JFrame {
 
         apiWindSpeedDescription1.setText("<html><b>Скорость ветра</b> " + weatherData.get("windSpeed") + "км/ч</html>");
         apiWindSpeedDescription2.setText("<html><b>Скорость ветра</b> " + weatherData2.get("windSpeed") + "км/ч</html>");
-        apiWindSpeedDescription3.setText("<html><b>Скорость ветра</b> " + weatherData3.get("windSpeed") + "км/ч</html>");
+        apiWindSpeedDescription3.setText("<html><b>Скорость ветра</b> " + weatherData2.get("windSpeed") + "км/ч</html>");
 
         double averageTemperature = (temperature1 + temperature2 + temperature3) / 3;
         averageTemperatureText.setText("Средняя температура: " + decimalFormat.format(averageTemperature) + "º");
