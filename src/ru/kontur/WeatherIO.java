@@ -16,6 +16,7 @@ public class WeatherIO extends JFrame {
 
     private static final String TITLE = "Погода";
     private static final String FONT_FAMILY = "Roboto";
+    private static final String DEFAULT_CITY = "Yekaterinburg";
     private static final int WIDTH = 1300;
     private static final int HEIGHT = 750;
 
@@ -50,7 +51,8 @@ public class WeatherIO extends JFrame {
         setLayout(null);
         setResizable(false);
         addComponents();
-        getWeather("Yekaterinburg");
+        getWeather(DEFAULT_CITY);
+        searchTextField.setText(DEFAULT_CITY);
         updateFavoriteList();
     }
 
