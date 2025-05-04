@@ -41,6 +41,10 @@ public class WeatherIO extends JFrame {
     private final DefaultListModel<String> listModel;
     private JButton btnShowFavorites;
 
+    private static final WeatherMeteoService weatherMeteoService = new WeatherMeteoService();
+    private static final WeatherApiService weatherApiService = new WeatherApiService();
+    private static final OpenWeatherMapService openWeatherMapService = new OpenWeatherMapService();
+
     public WeatherIO() {
         favoriteService = new FavoriteService();
         listModel = new DefaultListModel<>();
@@ -140,6 +144,7 @@ public class WeatherIO extends JFrame {
 
     /**
      * Deleting a city from the favorites list
+     *
      * @param cityName the city you want to remove from the favorites list
      */
     private void removeCityFromFavorites(String cityName) {
@@ -176,7 +181,7 @@ public class WeatherIO extends JFrame {
      */
     private void addAverageTemperatureText() {
         averageTemperatureText = new JLabel("Средняя температура: 24º");
-        averageTemperatureText.setBounds(450, 550, 450, 35);
+        averageTemperatureText.setBounds(450, 590, 450, 35);
         averageTemperatureText.setFont(new Font(FONT_FAMILY, Font.BOLD, 24));
         averageTemperatureText.setHorizontalAlignment(SwingConstants.CENTER);
         add(averageTemperatureText);
@@ -187,15 +192,15 @@ public class WeatherIO extends JFrame {
      */
     private void addWindSpeedDescription() {
         apiWindSpeedDescription1 = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
-        apiWindSpeedDescription1.setBounds(295, 450, 140, 65);
+        apiWindSpeedDescription1.setBounds(295, 490, 140, 65);
         apiWindSpeedDescription1.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
         apiWindSpeedDescription2 = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
-        apiWindSpeedDescription2.setBounds(710, 450, 140, 65);
+        apiWindSpeedDescription2.setBounds(710, 490, 140, 65);
         apiWindSpeedDescription2.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
         apiWindSpeedDescription3 = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
-        apiWindSpeedDescription3.setBounds(1125, 450, 140, 65);
+        apiWindSpeedDescription3.setBounds(1125, 490, 140, 65);
         apiWindSpeedDescription3.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
         add(apiWindSpeedDescription1);
         add(apiWindSpeedDescription2);
@@ -207,13 +212,13 @@ public class WeatherIO extends JFrame {
      */
     private void addWindSpeedImage() {
         JLabel windSpeedImage1 = new JLabel(loadImage(WIND_SPEED_RESOURCE_PATH));
-        windSpeedImage1.setBounds(205, 450, 75, 65);
+        windSpeedImage1.setBounds(205, 490, 75, 65);
 
         JLabel windSpeedImage2 = new JLabel(loadImage(WIND_SPEED_RESOURCE_PATH));
-        windSpeedImage2.setBounds(630, 450, 75, 65);
+        windSpeedImage2.setBounds(630, 490, 75, 65);
 
         JLabel windSpeedImage3 = new JLabel(loadImage(WIND_SPEED_RESOURCE_PATH));
-        windSpeedImage3.setBounds(1045, 450, 75, 65);
+        windSpeedImage3.setBounds(1045, 490, 75, 65);
         add(windSpeedImage1);
         add(windSpeedImage2);
         add(windSpeedImage3);
@@ -224,15 +229,15 @@ public class WeatherIO extends JFrame {
      */
     private void addHumidityDescription() {
         apiHumidityDescription1 = new JLabel("<html><b>Влажность</b> 100%</html>");
-        apiHumidityDescription1.setBounds(90, 450, 110, 65);
+        apiHumidityDescription1.setBounds(90, 490, 110, 65);
         apiHumidityDescription1.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
         apiHumidityDescription2 = new JLabel("<html><b>Влажность</b> 100%</html>");
-        apiHumidityDescription2.setBounds(505, 450, 110, 65);
+        apiHumidityDescription2.setBounds(505, 490, 110, 65);
         apiHumidityDescription2.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
         apiHumidityDescription3 = new JLabel("<html><b>Влажность</b> 100%</html>");
-        apiHumidityDescription3.setBounds(920, 450, 110, 65);
+        apiHumidityDescription3.setBounds(920, 490, 110, 65);
         apiHumidityDescription3.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
         add(apiHumidityDescription1);
@@ -245,13 +250,13 @@ public class WeatherIO extends JFrame {
      */
     private void addHumidityImage() {
         JLabel humidityImage1 = new JLabel(loadImage(HUMIDITY_RESOURCE_PATH));
-        humidityImage1.setBounds(15, 450, 75, 65);
+        humidityImage1.setBounds(15, 490, 75, 65);
 
         JLabel humidityImage2 = new JLabel(loadImage(HUMIDITY_RESOURCE_PATH));
-        humidityImage2.setBounds(430, 450, 75, 65);
+        humidityImage2.setBounds(430, 490, 75, 65);
 
         JLabel humidityImage3 = new JLabel(loadImage(HUMIDITY_RESOURCE_PATH));
-        humidityImage3.setBounds(845, 450, 75, 65);
+        humidityImage3.setBounds(845, 490, 75, 65);
         add(humidityImage1);
         add(humidityImage2);
         add(humidityImage3);
@@ -285,17 +290,17 @@ public class WeatherIO extends JFrame {
      */
     private void addWeatherDescription() {
         apiWeatherDescription1 = new JLabel("Облачно");
-        apiWeatherDescription1.setBounds(0, 375, 450, 35);
+        apiWeatherDescription1.setBounds(0, 440, 450, 35);
         apiWeatherDescription1.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
         apiWeatherDescription1.setHorizontalAlignment(SwingConstants.CENTER);
 
         apiWeatherDescription2 = new JLabel("Облачно");
-        apiWeatherDescription2.setBounds(400, 375, 450, 35);
+        apiWeatherDescription2.setBounds(400, 440, 450, 35);
         apiWeatherDescription2.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
         apiWeatherDescription2.setHorizontalAlignment(SwingConstants.CENTER);
 
         apiWeatherDescription3 = new JLabel("Облачно");
-        apiWeatherDescription3.setBounds(800, 375, 450, 35);
+        apiWeatherDescription3.setBounds(800, 440, 450, 35);
         apiWeatherDescription3.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
         apiWeatherDescription3.setHorizontalAlignment(SwingConstants.CENTER);
         add(apiWeatherDescription1);
@@ -308,17 +313,17 @@ public class WeatherIO extends JFrame {
      */
     private void addTemperatureText() {
         apiTemperatureText1 = new JLabel("25º");
-        apiTemperatureText1.setBounds(0, 320, 450, 55);
+        apiTemperatureText1.setBounds(0, 380, 450, 55);
         apiTemperatureText1.setFont(new Font(FONT_FAMILY, Font.BOLD, 48));
         apiTemperatureText1.setHorizontalAlignment(SwingConstants.CENTER);
 
         apiTemperatureText2 = new JLabel("25º");
-        apiTemperatureText2.setBounds(400, 320, 450, 55);
+        apiTemperatureText2.setBounds(400, 380, 450, 55);
         apiTemperatureText2.setFont(new Font(FONT_FAMILY, Font.BOLD, 48));
         apiTemperatureText2.setHorizontalAlignment(SwingConstants.CENTER);
 
         apiTemperatureText3 = new JLabel("25º");
-        apiTemperatureText3.setBounds(800, 320, 450, 55);
+        apiTemperatureText3.setBounds(800, 380, 450, 55);
         apiTemperatureText3.setFont(new Font(FONT_FAMILY, Font.BOLD, 48));
         apiTemperatureText3.setHorizontalAlignment(SwingConstants.CENTER);
         add(apiTemperatureText1);
@@ -331,13 +336,13 @@ public class WeatherIO extends JFrame {
      */
     private void addWeatherImage() {
         apiWeatherConditionImage1 = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
-        apiWeatherConditionImage1.setBounds(0, 125, 450, 220);
+        apiWeatherConditionImage1.setBounds(0, 165, 450, 220);
 
         apiWeatherConditionImage2 = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
-        apiWeatherConditionImage2.setBounds(400, 125, 450, 220);
+        apiWeatherConditionImage2.setBounds(400, 165, 450, 220);
 
         apiWeatherConditionImage3 = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
-        apiWeatherConditionImage3.setBounds(800, 125, 450, 220);
+        apiWeatherConditionImage3.setBounds(800, 165, 450, 220);
         add(apiWeatherConditionImage1);
         add(apiWeatherConditionImage2);
         add(apiWeatherConditionImage3);
@@ -371,6 +376,7 @@ public class WeatherIO extends JFrame {
 
     /**
      * Uploading a photo along the way. Otherwise, null is returned
+     *
      * @param resourcePath path to image resource
      * @return ImageIcon by image
      */
@@ -389,11 +395,12 @@ public class WeatherIO extends JFrame {
         if (cityName.replaceAll("\\s", "").length() == 0) {
             return;
         }
-        JSONObject weatherData = WeatherApp.getWeatherDataFromWeatherMeteo(cityName);
-        JSONObject weatherData2 = WeatherApp.getWeatherDataFromWeatherApi(cityName);
-        JSONObject weatherData3 = WeatherApp.getWeatherDataFromOpenWeatherMap(cityName);
-        String weatherCondition = (String) weatherData.get("weatherCondition");
-        switch (weatherCondition) {
+        JSONObject weatherData = WeatherApp.getWeatherFromService(weatherMeteoService, cityName);
+        JSONObject weatherData2 = WeatherApp.getWeatherFromService(weatherApiService, cityName);
+        JSONObject weatherData3 = WeatherApp.getWeatherFromService(openWeatherMapService, cityName);
+
+        String weatherCondition1 = (String) weatherData.get("weatherCondition");
+        switch (weatherCondition1) {
             case "Ясно" -> {
                 apiWeatherConditionImage1.setIcon(loadImage(CLEAR_RESOURCE_PATH));
                 apiWeatherConditionImage2.setIcon(loadImage(CLEAR_RESOURCE_PATH));
@@ -415,11 +422,12 @@ public class WeatherIO extends JFrame {
                 apiWeatherConditionImage3.setIcon(loadImage(SNOW_RESOURCE_PATH));
             }
         }
-        apiWeatherDescription1.setText(weatherCondition);
-        apiWeatherDescription2.setText(weatherCondition);
-        apiWeatherDescription3.setText(weatherCondition);
 
-        DecimalFormat decimalFormat = new DecimalFormat( "#.#" );
+        apiWeatherDescription1.setText(weatherCondition1);
+        apiWeatherDescription2.setText(weatherCondition1);
+        apiWeatherDescription3.setText(weatherCondition1);
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
         double temperature1 = (double) weatherData.get("temperature");
         double temperature2 = (double) weatherData2.get("temperature");
         double temperature3 = (double) weatherData3.get("temperature");
