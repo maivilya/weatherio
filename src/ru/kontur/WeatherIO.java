@@ -16,7 +16,7 @@ public class WeatherIO extends JFrame {
 
     private static final String TITLE = "Погода";
     private static final String FONT_FAMILY = "Roboto";
-    private static final String DEFAULT_CITY = "Yekaterinburg";
+    private static final String DEFAULT_CITY = "Екатеринбург";
     private static final int WIDTH = 1300;
     private static final int HEIGHT = 750;
 
@@ -45,6 +45,8 @@ public class WeatherIO extends JFrame {
     private static final WeatherApiService weatherApiService = new WeatherApiService();
     private static final OpenWeatherMapService openWeatherMapService = new OpenWeatherMapService();
 
+    private static final TranslatorService translator = new TranslatorService();
+
     public WeatherIO() {
         favoriteService = new FavoriteService();
         listModel = new DefaultListModel<>();
@@ -55,7 +57,12 @@ public class WeatherIO extends JFrame {
         setLayout(null);
         setResizable(false);
         addComponents();
-        getWeather(DEFAULT_CITY);
+        try {
+            getWeather(translator.translateCityName(DEFAULT_CITY, "ru", "en"));
+            System.out.println(translator.translateCityName(DEFAULT_CITY, "ru", "en"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         searchTextField.setText(DEFAULT_CITY);
         updateFavoriteList();
     }
@@ -131,8 +138,12 @@ public class WeatherIO extends JFrame {
             panel.add(removeButton);
 
             menuItem.addActionListener(e -> {
-                getWeather(city);
-                searchTextField.setText(city);
+                try {
+                    getWeather(translator.translateCityName(city, "ru", "en"));
+                    searchTextField.setText(city);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             });
             menuItem.setLayout(new BorderLayout());
             menuItem.add(panel, BorderLayout.CENTER);
@@ -359,7 +370,13 @@ public class WeatherIO extends JFrame {
         searchButton.setBounds(910, 15, 50, 45);
         searchButton.addActionListener(event -> {
             String userCityInput = searchTextField.getText();
-            getWeather(userCityInput);
+            //getWeather(userCityInput);
+            try {
+                getWeather(translator.translateCityName(userCityInput, "ru", "en"));
+                System.out.println(translator.translateCityName(userCityInput, "ru", "en"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         add(searchButton);
     }
