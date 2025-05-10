@@ -41,8 +41,6 @@ public class WeatherIO2 extends JFrame {
     private JLabel apiHumidityDescription1, apiHumidityDescription2, apiHumidityDescription3;
     private JLabel apiWindSpeedDescription1, apiWindSpeedDescription2, apiWindSpeedDescription3;
     private JLabel averageTemperatureText;
-    private JPanel topPanel;
-    private JButton btnShowJournal;
 
     // To work with the database
     private final FavoriteService favoriteService;
@@ -176,7 +174,7 @@ public class WeatherIO2 extends JFrame {
     }
 
     private void addTopPanel() {
-        topPanel = new JPanel();
+        JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
         searchTextField = new JTextField();
@@ -203,7 +201,7 @@ public class WeatherIO2 extends JFrame {
         btnShowFavorites.addActionListener(e -> showFavoritesList());
         topPanel.add(btnShowFavorites);
 
-        btnShowJournal = new JButton(loadImage(JOURNAL_RESOURCE_PATH));
+        JButton btnShowJournal = new JButton(loadImage(JOURNAL_RESOURCE_PATH));
         btnShowJournal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnShowJournal.setBackground(Color.WHITE);
         btnShowJournal.setBorder(BorderFactory.createEmptyBorder());
