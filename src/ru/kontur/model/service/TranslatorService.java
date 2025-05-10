@@ -1,4 +1,4 @@
-package ru.kontur;
+package ru.kontur.model.service;
 
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
