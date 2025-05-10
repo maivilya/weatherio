@@ -36,14 +36,16 @@ public class WeatherIO extends JFrame {
     private JLabel apiHumidityDescription1, apiHumidityDescription2, apiHumidityDescription3;
     private JLabel apiWindSpeedDescription1, apiWindSpeedDescription2, apiWindSpeedDescription3;
     private JLabel averageTemperatureText;
+    private JLabel averageHumidityText;
+    private JLabel averageWindSpeedText;
 
     private final FavoriteService favoriteService;
     private final DefaultListModel<String> listModel;
     private JButton btnShowFavorites;
 
-    private static final WeatherMeteoService weatherMeteoService = new WeatherMeteoService();
-    private static final WeatherApiService weatherApiService = new WeatherApiService();
-    private static final OpenWeatherMapService openWeatherMapService = new OpenWeatherMapService();
+    private final WeatherMeteoService weatherMeteoService = new WeatherMeteoService();
+    private final WeatherApiService weatherApiService = new WeatherApiService();
+    private final OpenWeatherMapService openWeatherMapService = new OpenWeatherMapService();
 
     private static final TranslatorService translator = new TranslatorService();
 
@@ -59,7 +61,6 @@ public class WeatherIO extends JFrame {
         addComponents();
         try {
             getWeather(translator.translateCityName(DEFAULT_CITY, "ru", "en"));
-            System.out.println(translator.translateCityName(DEFAULT_CITY, "ru", "en"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,6 +84,8 @@ public class WeatherIO extends JFrame {
         addBtnShowFavorites();
         addBtnAddCity();
         addAverageTemperatureText();
+        addAverageHumidityText();
+        addAverageWindSpeedText();
         addApiDescription();
     }
 
@@ -188,10 +191,10 @@ public class WeatherIO extends JFrame {
     }
 
     /**
-     * Adding a average temperature text
+     * Adding an average temperature text
      */
     private void addAverageTemperatureText() {
-        averageTemperatureText = new JLabel("Средняя температура: 24º");
+        averageTemperatureText = new JLabel();
         averageTemperatureText.setBounds(450, 590, 450, 35);
         averageTemperatureText.setFont(new Font(FONT_FAMILY, Font.BOLD, 24));
         averageTemperatureText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -199,18 +202,37 @@ public class WeatherIO extends JFrame {
     }
 
     /**
+     * Adding an average humidity text
+     */
+    private void addAverageHumidityText() {
+        averageHumidityText = new JLabel();
+        averageHumidityText.setBounds(450, 610, 450, 35);
+        averageHumidityText.setFont(new Font(FONT_FAMILY, Font.BOLD, 24));
+        averageHumidityText.setHorizontalAlignment(SwingConstants.CENTER);
+        add(averageHumidityText);
+    }
+
+    private void addAverageWindSpeedText() {
+        averageWindSpeedText = new JLabel();
+        averageWindSpeedText.setBounds(450, 630, 450, 35);
+        averageWindSpeedText.setFont(new Font(FONT_FAMILY, Font.BOLD, 24));
+        averageWindSpeedText.setHorizontalAlignment(SwingConstants.CENTER);
+        add(averageWindSpeedText);
+    }
+
+    /**
      * Adding a wind speed description
      */
     private void addWindSpeedDescription() {
-        apiWindSpeedDescription1 = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
+        apiWindSpeedDescription1 = new JLabel();
         apiWindSpeedDescription1.setBounds(295, 490, 140, 65);
         apiWindSpeedDescription1.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
-        apiWindSpeedDescription2 = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
+        apiWindSpeedDescription2 = new JLabel();
         apiWindSpeedDescription2.setBounds(710, 490, 140, 65);
         apiWindSpeedDescription2.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
-        apiWindSpeedDescription3 = new JLabel("<html><b>Скорость ветра</b>\n3 км/ч</html>");
+        apiWindSpeedDescription3 = new JLabel();
         apiWindSpeedDescription3.setBounds(1125, 490, 140, 65);
         apiWindSpeedDescription3.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
         add(apiWindSpeedDescription1);
@@ -239,15 +261,15 @@ public class WeatherIO extends JFrame {
      * Adding a humidity description
      */
     private void addHumidityDescription() {
-        apiHumidityDescription1 = new JLabel("<html><b>Влажность</b> 100%</html>");
+        apiHumidityDescription1 = new JLabel();
         apiHumidityDescription1.setBounds(90, 490, 110, 65);
         apiHumidityDescription1.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
-        apiHumidityDescription2 = new JLabel("<html><b>Влажность</b> 100%</html>");
+        apiHumidityDescription2 = new JLabel();
         apiHumidityDescription2.setBounds(505, 490, 110, 65);
         apiHumidityDescription2.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
-        apiHumidityDescription3 = new JLabel("<html><b>Влажность</b> 100%</html>");
+        apiHumidityDescription3 = new JLabel();
         apiHumidityDescription3.setBounds(920, 490, 110, 65);
         apiHumidityDescription3.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
 
@@ -300,17 +322,17 @@ public class WeatherIO extends JFrame {
      * Adding a weather description
      */
     private void addWeatherDescription() {
-        apiWeatherDescription1 = new JLabel("Облачно");
+        apiWeatherDescription1 = new JLabel();
         apiWeatherDescription1.setBounds(0, 440, 450, 35);
         apiWeatherDescription1.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
         apiWeatherDescription1.setHorizontalAlignment(SwingConstants.CENTER);
 
-        apiWeatherDescription2 = new JLabel("Облачно");
+        apiWeatherDescription2 = new JLabel();
         apiWeatherDescription2.setBounds(400, 440, 450, 35);
         apiWeatherDescription2.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
         apiWeatherDescription2.setHorizontalAlignment(SwingConstants.CENTER);
 
-        apiWeatherDescription3 = new JLabel("Облачно");
+        apiWeatherDescription3 = new JLabel();
         apiWeatherDescription3.setBounds(800, 440, 450, 35);
         apiWeatherDescription3.setFont(new Font(FONT_FAMILY, Font.PLAIN, 32));
         apiWeatherDescription3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -323,17 +345,17 @@ public class WeatherIO extends JFrame {
      * Adding a temperature text
      */
     private void addTemperatureText() {
-        apiTemperatureText1 = new JLabel("25º");
+        apiTemperatureText1 = new JLabel();
         apiTemperatureText1.setBounds(0, 380, 450, 55);
         apiTemperatureText1.setFont(new Font(FONT_FAMILY, Font.BOLD, 48));
         apiTemperatureText1.setHorizontalAlignment(SwingConstants.CENTER);
 
-        apiTemperatureText2 = new JLabel("25º");
+        apiTemperatureText2 = new JLabel();
         apiTemperatureText2.setBounds(400, 380, 450, 55);
         apiTemperatureText2.setFont(new Font(FONT_FAMILY, Font.BOLD, 48));
         apiTemperatureText2.setHorizontalAlignment(SwingConstants.CENTER);
 
-        apiTemperatureText3 = new JLabel("25º");
+        apiTemperatureText3 = new JLabel();
         apiTemperatureText3.setBounds(800, 380, 450, 55);
         apiTemperatureText3.setFont(new Font(FONT_FAMILY, Font.BOLD, 48));
         apiTemperatureText3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -346,13 +368,13 @@ public class WeatherIO extends JFrame {
      * Adding a weather image
      */
     private void addWeatherImage() {
-        apiWeatherConditionImage1 = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
+        apiWeatherConditionImage1 = new JLabel();
         apiWeatherConditionImage1.setBounds(0, 165, 450, 220);
 
-        apiWeatherConditionImage2 = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
+        apiWeatherConditionImage2 = new JLabel();
         apiWeatherConditionImage2.setBounds(400, 165, 450, 220);
 
-        apiWeatherConditionImage3 = new JLabel(loadImage(CLOUDY_RESOURCE_PATH));
+        apiWeatherConditionImage3 = new JLabel();
         apiWeatherConditionImage3.setBounds(800, 165, 450, 220);
         add(apiWeatherConditionImage1);
         add(apiWeatherConditionImage2);
@@ -370,10 +392,8 @@ public class WeatherIO extends JFrame {
         searchButton.setBounds(910, 15, 50, 45);
         searchButton.addActionListener(event -> {
             String userCityInput = searchTextField.getText();
-            //getWeather(userCityInput);
             try {
                 getWeather(translator.translateCityName(userCityInput, "ru", "en"));
-                System.out.println(translator.translateCityName(userCityInput, "ru", "en"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -404,7 +424,7 @@ public class WeatherIO extends JFrame {
         } catch (IOException exception) {
             System.out.println(exception.getMessage());
         }
-        System.out.println("Could not find resource");
+        System.out.println("Ресурс не найден (изображение)");
         return null;
     }
 
@@ -461,6 +481,9 @@ public class WeatherIO extends JFrame {
         apiWindSpeedDescription3.setText("<html><b>Скорость ветра</b> " + weatherData2.get("windSpeed") + "км/ч</html>");
 
         double averageTemperature = (temperature1 + temperature2 + temperature3) / 3;
+        // TODO: проверить среднюю влажность и скорость ветра
+        //double averageHumidity = ((double)weatherData.get("humidity") + (double)weatherData2.get("humidity") + (double)weatherData3.get("humidity")) / 3;
         averageTemperatureText.setText("Средняя температура: " + decimalFormat.format(averageTemperature) + "º");
+        //averageHumidityText.setText("Средний показатель влажности" + decimalFormat.format(averageHumidity)+ "%");
     }
 }
