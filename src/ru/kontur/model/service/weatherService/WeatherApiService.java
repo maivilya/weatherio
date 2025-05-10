@@ -1,4 +1,4 @@
-package ru.kontur;
+package ru.kontur.model.service.weatherService;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

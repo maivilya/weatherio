@@ -1,10 +1,10 @@
-package ru.kontur;
+package ru.kontur.model.service.weatherService;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-public class OpenWeatherMapService extends AbstractWeatherService{
+public class OpenWeatherMapService extends AbstractWeatherService {
 
     private static final String OPEN_WEATHER_MAP_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s&units=metric&lang=ru";
     private static final String OPEN_WEATHER_MAP_API_KEY = "0fe00a1237c1788b7616dcf8ea456a26";
