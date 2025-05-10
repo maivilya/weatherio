@@ -1,7 +1,13 @@
-package ru.kontur;
+package ru.kontur.view;
 
 import org.json.simple.JSONObject;
-
+import ru.kontur.database.FavoriteService;
+import ru.kontur.WeatherApp;
+import ru.kontur.model.service.CityAutoCompleteService;
+import ru.kontur.model.service.TranslatorService;
+import ru.kontur.model.service.weatherService.OpenWeatherMapService;
+import ru.kontur.model.service.weatherService.WeatherApiService;
+import ru.kontur.model.service.weatherService.WeatherMeteoService;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -36,8 +42,6 @@ public class WeatherIO extends JFrame {
     private JLabel apiHumidityDescription1, apiHumidityDescription2, apiHumidityDescription3;
     private JLabel apiWindSpeedDescription1, apiWindSpeedDescription2, apiWindSpeedDescription3;
     private JLabel averageTemperatureText;
-    private JLabel averageHumidityText;
-    private JLabel averageWindSpeedText;
 
     private final FavoriteService favoriteService;
     private final DefaultListModel<String> listModel;
@@ -48,6 +52,10 @@ public class WeatherIO extends JFrame {
     private final OpenWeatherMapService openWeatherMapService = new OpenWeatherMapService();
 
     private static final TranslatorService translator = new TranslatorService();
+
+    private CityAutoCompleteService cityAutoCompleteService = new CityAutoCompleteService();
+    private JPopupMenu suggestionsPopup;
+    private boolean isSuggestionClicked;
 
     public WeatherIO() {
         favoriteService = new FavoriteService();
@@ -84,8 +92,6 @@ public class WeatherIO extends JFrame {
         addBtnShowFavorites();
         addBtnAddCity();
         addAverageTemperatureText();
-        addAverageHumidityText();
-        addAverageWindSpeedText();
         addApiDescription();
     }
 
@@ -199,25 +205,6 @@ public class WeatherIO extends JFrame {
         averageTemperatureText.setFont(new Font(FONT_FAMILY, Font.BOLD, 24));
         averageTemperatureText.setHorizontalAlignment(SwingConstants.CENTER);
         add(averageTemperatureText);
-    }
-
-    /**
-     * Adding an average humidity text
-     */
-    private void addAverageHumidityText() {
-        averageHumidityText = new JLabel();
-        averageHumidityText.setBounds(450, 610, 450, 35);
-        averageHumidityText.setFont(new Font(FONT_FAMILY, Font.BOLD, 24));
-        averageHumidityText.setHorizontalAlignment(SwingConstants.CENTER);
-        add(averageHumidityText);
-    }
-
-    private void addAverageWindSpeedText() {
-        averageWindSpeedText = new JLabel();
-        averageWindSpeedText.setBounds(450, 630, 450, 35);
-        averageWindSpeedText.setFont(new Font(FONT_FAMILY, Font.BOLD, 24));
-        averageWindSpeedText.setHorizontalAlignment(SwingConstants.CENTER);
-        add(averageWindSpeedText);
     }
 
     /**
@@ -369,13 +356,13 @@ public class WeatherIO extends JFrame {
      */
     private void addWeatherImage() {
         apiWeatherConditionImage1 = new JLabel();
-        apiWeatherConditionImage1.setBounds(0, 165, 450, 220);
+        apiWeatherConditionImage1.setBounds(100, 165, 450, 220);
 
         apiWeatherConditionImage2 = new JLabel();
-        apiWeatherConditionImage2.setBounds(400, 165, 450, 220);
+        apiWeatherConditionImage2.setBounds(500, 165, 450, 220);
 
         apiWeatherConditionImage3 = new JLabel();
-        apiWeatherConditionImage3.setBounds(800, 165, 450, 220);
+        apiWeatherConditionImage3.setBounds(900, 165, 450, 220);
         add(apiWeatherConditionImage1);
         add(apiWeatherConditionImage2);
         add(apiWeatherConditionImage3);
@@ -409,6 +396,61 @@ public class WeatherIO extends JFrame {
         searchTextField.setBounds(400, 15, 500, 45);
         searchTextField.setFont(new Font(FONT_FAMILY, Font.PLAIN, 24));
         add(searchTextField);
+
+        //TODO: пока что всплывающее меню под вопросиком
+        /*suggestionsPopup = new JPopupMenu();
+
+        searchTextField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { showSuggestions(); }
+            public void removeUpdate(DocumentEvent e) { showSuggestions(); }
+            public void changedUpdate(DocumentEvent e) { showSuggestions(); }
+
+            private void showSuggestions() {
+                if (isSuggestionClicked) {
+                    isSuggestionClicked = false;
+                    return;
+                }
+
+                String input = searchTextField.getText();
+                if (input.length() < 3) {
+                    suggestionsPopup.setVisible(false);
+                    return;
+                }
+
+                new Thread(() -> {
+                    try {
+                        Map<String, String> cityMap = cityAutoCompleteService.fetchCities(input);
+                        SwingUtilities.invokeLater(() -> {
+                            suggestionsPopup.removeAll();
+
+                            for (Map.Entry<String, String> entry : cityMap.entrySet()) {
+                                String cityName = entry.getKey();
+                                String displayName = entry.getValue();
+
+                                JMenuItem item = new JMenuItem(displayName);
+                                item.setFont(new Font(FONT_FAMILY, Font.PLAIN, 18));
+                                item.addActionListener(e -> {
+                                    isSuggestionClicked = true;
+                                    searchTextField.setText(cityName);
+                                    searchTextField.requestFocusInWindow();
+                                    suggestionsPopup.setVisible(false);
+                                    //searchTextField.setCaretPosition(cityName.length());
+                                });
+                                suggestionsPopup.add(item);
+                            }
+
+                            if (!cityMap.isEmpty()) {
+                                suggestionsPopup.show(searchTextField, 0, searchTextField.getHeight());
+                            } else {
+                                suggestionsPopup.setVisible(false);
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }).start();
+            }
+        });*/
     }
 
     /**
@@ -435,7 +477,7 @@ public class WeatherIO extends JFrame {
         JSONObject weatherData = WeatherApp.getWeatherFromService(weatherMeteoService, cityName);
         JSONObject weatherData2 = WeatherApp.getWeatherFromService(weatherApiService, cityName);
         JSONObject weatherData3 = WeatherApp.getWeatherFromService(openWeatherMapService, cityName);
-
+        if (weatherData == null && weatherData2 == null && weatherData3 == null) throw new AssertionError();
         String weatherCondition1 = (String) weatherData.get("weatherCondition");
         switch (weatherCondition1) {
             case "Ясно" -> {
@@ -481,9 +523,6 @@ public class WeatherIO extends JFrame {
         apiWindSpeedDescription3.setText("<html><b>Скорость ветра</b> " + weatherData2.get("windSpeed") + "км/ч</html>");
 
         double averageTemperature = (temperature1 + temperature2 + temperature3) / 3;
-        // TODO: проверить среднюю влажность и скорость ветра
-        //double averageHumidity = ((double)weatherData.get("humidity") + (double)weatherData2.get("humidity") + (double)weatherData3.get("humidity")) / 3;
         averageTemperatureText.setText("Средняя температура: " + decimalFormat.format(averageTemperature) + "º");
-        //averageHumidityText.setText("Средний показатель влажности" + decimalFormat.format(averageHumidity)+ "%");
     }
 }
