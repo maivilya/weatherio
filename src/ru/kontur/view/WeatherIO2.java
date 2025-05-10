@@ -31,6 +31,7 @@ public class WeatherIO2 extends JFrame {
     private static final String CLOUDY_RESOURCE_PATH = "assets/cloudy.png";
     private static final String RAIN_RESOURCE_PATH = "assets/rain.png";
     private static final String SNOW_RESOURCE_PATH = "assets/snow.png";
+    private static final String JOURNAL_RESOURCE_PATH = "assets/journal.png";
 
     // Basic information fields
     private static JTextField searchTextField;
@@ -41,6 +42,7 @@ public class WeatherIO2 extends JFrame {
     private JLabel apiWindSpeedDescription1, apiWindSpeedDescription2, apiWindSpeedDescription3;
     private JLabel averageTemperatureText;
     private JPanel topPanel;
+    private JButton btnShowJournal;
 
     // To work with the database
     private final FavoriteService favoriteService;
@@ -201,6 +203,13 @@ public class WeatherIO2 extends JFrame {
         btnShowFavorites.addActionListener(e -> showFavoritesList());
         topPanel.add(btnShowFavorites);
 
+        btnShowJournal = new JButton(loadImage(JOURNAL_RESOURCE_PATH));
+        btnShowJournal.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnShowJournal.setBackground(Color.WHITE);
+        btnShowJournal.setBorder(BorderFactory.createEmptyBorder());
+        btnShowJournal.addActionListener(e -> showJournalList());
+        topPanel.add(btnShowJournal);
+
         JButton btnAddCity = new JButton("Добавить в избранное");
         btnAddCity.addActionListener(e -> {
             String cityName = JOptionPane.showInputDialog("Введите название города: ");
@@ -265,6 +274,26 @@ public class WeatherIO2 extends JFrame {
             popupMenu.add(menuItem);
         }
         popupMenu.show(btnShowFavorites, 0, btnShowFavorites.getHeight());
+    }
+
+    private void showJournalList() {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem journal1Item = new JMenuItem("История");
+        journal1Item.addActionListener(e -> {
+            HistoryIO historyWindow = new HistoryIO();
+            historyWindow.setVisible(true);
+        });
+        popupMenu.add(journal1Item);
+
+        JMenuItem journal2Item = new JMenuItem("Прогноз");
+        journal2Item.addActionListener(e -> {
+            ForecastIO forecastWindow = new ForecastIO();
+            forecastWindow.setVisible(true);
+        });
+        popupMenu.add(journal2Item);
+
+        popupMenu.show(btnShowFavorites, 100, btnShowFavorites.getHeight());
     }
 
     private void removeCityFromFavorites(String cityName) {
