@@ -5,8 +5,6 @@ import javax.swing.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Scanner;
 
 public abstract class AbstractWeatherService {
@@ -34,8 +32,6 @@ public abstract class AbstractWeatherService {
     }
 
     protected abstract JSONObject parseWeatherData(String stringJSON) throws Exception;
-
-    public abstract Map<LocalDateTime, Double> getHourlyForecast(String locationName);
 
     protected void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(new JFrame(), message, "Ошибка", JOptionPane.ERROR_MESSAGE);
