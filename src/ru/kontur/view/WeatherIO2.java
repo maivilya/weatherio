@@ -288,6 +288,11 @@ public class WeatherIO2 extends JFrame {
         journal2Item.addActionListener(e -> {
             ForecastIO forecastWindow = new ForecastIO();
             forecastWindow.setVisible(true);
+            try {
+                forecastWindow.loadForecasts(translator.translateCityName(searchTextField.getText(), "ru", "en"));
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         });
         popupMenu.add(journal2Item);
 
