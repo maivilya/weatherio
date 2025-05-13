@@ -17,7 +17,6 @@ public class WeatherMeteoService extends AbstractWeatherService {
     /**
      * Obtaining weather information for a specific city
      * that was received in a request from a user
-     *
      * @param locationName Location(city) requested by the user
      * @return JSON object with information on a specific city
      */
@@ -45,6 +44,54 @@ public class WeatherMeteoService extends AbstractWeatherService {
             throw new RuntimeException(e);
         }
         return null;
+    }
+
+    public JSONObject getHourlyForecast(String locationName) {
+        JSONArray locationData = getLocationData(locationName);
+        if (locationData == null) {
+            showErrorMessage(CITY_NAME_ERROR_MESSAGE);
+            System.out.println(CITY_NAME_ERROR_MESSAGE);
+            return null;
+        }
+
+        String url = makeHourlyUrl(locationData);
+        return fetchHourlyForecastData(url);
+    }
+
+    private String makeHourlyUrl(JSONArray locationData) {
+        JSONObject location = (JSONObject) locationData.get(0);
+        return "https://api.open-meteo.com/v1/forecast?" +
+                "latitude=" + location.get("latitude") +
+                "&longitude=" + location.get("longitude") +
+                "&hourly=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m" +
+                "&timezone=Europe%2FMoscow";
+    }
+
+    @Override
+    protected JSONObject parseHourlyForecast(String jsonString) throws Exception {
+        JSONObject resultJSONObj = (JSONObject) PARSER.parse(jsonString);
+        JSONObject hourly = (JSONObject) resultJSONObj.get("hourly");
+
+        JSONArray timeArray = (JSONArray) hourly.get("time");
+        JSONArray tempArray = (JSONArray) hourly.get("temperature_2m");
+        JSONArray humidityArray = (JSONArray) hourly.get("relative_humidity_2m");
+        JSONArray weatherCodeArray = (JSONArray) hourly.get("weather_code");
+        JSONArray windSpeedArray = (JSONArray) hourly.get("wind_speed_10m");
+
+        JSONArray forecastArray = new JSONArray();
+
+        for (int i = 0; i < timeArray.size(); i++) {
+            JSONObject hourData = new JSONObject();
+            hourData.put("time", timeArray.get(i));
+            hourData.put("temperature", tempArray.get(i));
+            hourData.put("humidity", humidityArray.get(i));
+            hourData.put("weatherCondition", WeatherCodeConverter.convert((long) weatherCodeArray.get(i)));
+            hourData.put("windSpeed", windSpeedArray.get(i));
+            forecastArray.add(hourData);
+        }
+        JSONObject result = new JSONObject();
+        result.put("hourly", forecastArray);
+        return result;
     }
 
     private String makeUrl(JSONArray locationData) {
