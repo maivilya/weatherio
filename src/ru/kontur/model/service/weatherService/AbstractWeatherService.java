@@ -31,6 +31,24 @@ public abstract class AbstractWeatherService {
         return null;
     }
 
+    protected JSONObject fetchHourlyForecastData(String urlString) {
+        try {
+            HttpURLConnection connection = fetchApiResponse(urlString);
+            if (connection == null || connection.getResponseCode() != 200) {
+                showErrorMessage(CONNECTION_ERROR_MESSAGE);
+                System.out.println(CONNECTION_ERROR_MESSAGE);
+                return null;
+            }
+            StringBuilder resultJSON = getResultJSON(connection);
+            return parseHourlyForecast(resultJSON.toString());
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
+    protected abstract JSONObject parseHourlyForecast(String jsonString) throws Exception;
+
     protected abstract JSONObject parseWeatherData(String stringJSON) throws Exception;
 
     protected void showErrorMessage(String message) {
