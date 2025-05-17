@@ -67,7 +67,7 @@ public class WeatherApiService extends AbstractWeatherService {
         weatherData.put("temperature", current.get("temp_c"));
         weatherData.put("weatherCondition", condition.get("text"));
         weatherData.put("humidity", current.get("humidity"));
-        weatherData.put("windSpeed", current.get("windSpeed"));
+        weatherData.put("windSpeed", (double) current.get("wind_kph") / 3.6);
         return weatherData;
     }
 }
