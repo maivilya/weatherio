@@ -1,5 +1,11 @@
 package ru.kontur.view;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.time.Hour;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.kontur.model.service.weatherService.OpenWeatherMapService;
@@ -26,6 +32,8 @@ public class ForecastIO extends JFrame {
     private DefaultTableModel weatherApiModel;
     private DefaultTableModel weatherMeteoModel;
 
+    private JPanel graphPanel;
+
     public ForecastIO() {
         setTitle(TITLE);
         setSize(WIDTH, HEIGHT);
@@ -45,7 +53,7 @@ public class ForecastIO extends JFrame {
         tablePanel.add(createApiTableFor("WeatherMeteo"));
 
         // Правая панель — графики (будет позже)
-        JPanel graphPanel = new JPanel();
+        graphPanel = new JPanel();
         graphPanel.setBackground(Color.WHITE);
 
         splitPane.setLeftComponent(new JScrollPane(tablePanel));
@@ -112,9 +120,17 @@ public class ForecastIO extends JFrame {
 
         fillHourlyForecast(openWeatherModel, openForecast);
         fillHourlyForecast(weatherMeteoModel, meteoForecast);
+
+        graphPanel.removeAll();
+        graphPanel.setLayout(new GridLayout(2, 1));
+        ChartPanel openWeatherChart = createTemperatureChart("OpenWeatherMap", openForecast);
+        ChartPanel meteoChart = createTemperatureChart("WeatherMeteo", meteoForecast);
+        graphPanel.add(openWeatherChart);
+        graphPanel.add(meteoChart);
+        graphPanel.revalidate();
+        graphPanel.repaint();
     }
 
-    @SuppressWarnings("unchecked")
     private void fillHourlyForecast(DefaultTableModel model, JSONObject forecastData) {
         if (forecastData == null || !forecastData.containsKey("hourly")) return;
         JSONArray hourlyArray = (JSONArray) forecastData.get("hourly");
@@ -153,5 +169,36 @@ public class ForecastIO extends JFrame {
                 }
             }
         }
+    }
+
+    private ChartPanel createTemperatureChart(String apiName, JSONObject forecastData) {
+        TimeSeries series = new TimeSeries(apiName + " Temperature");
+
+        JSONArray hourlyArray = (JSONArray) forecastData.get("hourly");
+        for (Object obj : hourlyArray) {
+            JSONObject hourData = (JSONObject) obj;
+            String timeStr = (String) hourData.get("time");
+            Number temperature = (Number) hourData.get("temperature");
+
+            LocalDateTime time;
+            if (timeStr.contains("T")) {
+                time = LocalDateTime.parse(timeStr.replace("T", " "), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            } else {
+                time = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            }
+            series.add(new Hour(time.getHour(), time.getDayOfMonth(), time.getMonthValue(), time.getYear()), temperature);
+        }
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        dataset.addSeries(series);
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+                apiName,
+                "Время (T)",
+                "Температура (°C)",
+                dataset,
+                false,
+                true,
+                false
+        );
+        return new ChartPanel(chart);
     }
 }
