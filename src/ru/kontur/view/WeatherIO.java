@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class WeatherIO2 extends JFrame {
+public class WeatherIO extends JFrame {
 
     // Main window parameters
     private static final String TITLE = "Погода";
@@ -55,7 +55,7 @@ public class WeatherIO2 extends JFrame {
     // Translator for city names
     private static final TranslatorService translator = new TranslatorService();
 
-    public WeatherIO2() {
+    public WeatherIO() {
         favoriteService = new FavoriteService();
         listModel = new DefaultListModel<>();
         setTitle(TITLE);
