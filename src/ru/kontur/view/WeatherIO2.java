@@ -387,9 +387,9 @@ public class WeatherIO2 extends JFrame {
         apiHumidityDescription2.setText("<html><b>Влажность:</b> " + d2.get("humidity") + "%</html>");
         apiHumidityDescription3.setText("<html><b>Влажность:</b> " + d3.get("humidity") + "%</html>");
 
-        apiWindSpeedDescription1.setText("<html><b>Скорость ветра:</b> " + d1.get("windSpeed") + "км/ч</html>");
-        apiWindSpeedDescription2.setText("<html><b>Скорость ветра:</b> " + d2.get("windSpeed") + "км/ч</html>");
-        apiWindSpeedDescription3.setText("<html><b>Скорость ветра:</b> " + d3.get("windSpeed") + "км/ч</html>");
+        apiWindSpeedDescription1.setText("<html><b>Скорость ветра:</b> " + d1.get("windSpeed") + " м/с</html>");
+        apiWindSpeedDescription2.setText("<html><b>Скорость ветра:</b> " + df.format(d2.get("windSpeed")) + " м/с</html>");
+        apiWindSpeedDescription3.setText("<html><b>Скорость ветра:</b> " + d3.get("windSpeed") + " м/с</html>");
 
         double avgTemp = (t1 + t2 + t3) / 3;
         averageTemperatureText.setText("Средняя температура: " + df.format(avgTemp) + "º");
