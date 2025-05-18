@@ -10,6 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.kontur.model.service.weatherService.OpenWeatherMapService;
 import ru.kontur.model.service.weatherService.WeatherMeteoService;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -25,14 +26,9 @@ public class ForecastIO extends JFrame {
     private static final int WIDTH = 1300;
     private static final int HEIGHT = 750;
 
-    private JTable openWeatherTable;
-    private JTable weatherApiTable;
-    private JTable weatherMeteoTable;
     private DefaultTableModel openWeatherModel;
-    private DefaultTableModel weatherApiModel;
     private DefaultTableModel weatherMeteoModel;
-
-    private JPanel graphPanel;
+    private final JPanel graphPanel;
 
     public ForecastIO() {
         setTitle(TITLE);
@@ -44,18 +40,14 @@ public class ForecastIO extends JFrame {
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         splitPane.setDividerLocation(650);
 
-        // Левая панель с таблицами
         JPanel tablePanel = new JPanel();
         tablePanel.setLayout(new BoxLayout(tablePanel, BoxLayout.Y_AXIS));
-
         tablePanel.add(createApiTableFor("OpenWeatherMap"));
         tablePanel.add(Box.createVerticalStrut(10));
         tablePanel.add(createApiTableFor("WeatherMeteo"));
 
-        // Правая панель — графики (будет позже)
         graphPanel = new JPanel();
         graphPanel.setBackground(Color.WHITE);
-
         splitPane.setLeftComponent(new JScrollPane(tablePanel));
         splitPane.setRightComponent(graphPanel);
         add(splitPane);
@@ -68,12 +60,10 @@ public class ForecastIO extends JFrame {
 
         LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM");
-
         for (int i = 0; i < 5; i++) {
             LocalDate date = today.plusDays(i);
             model.addColumn(date.format(formatter));
         }
-
         for (int hour = 0; hour < 24; hour++) {
             String hourStr = String.format("%02d:00", hour);
             Object[] row = new Object[6];
@@ -83,22 +73,10 @@ public class ForecastIO extends JFrame {
             }
             model.addRow(row);
         }
-
         switch (apiName) {
-            case "OpenWeatherMap" -> {
-                openWeatherModel = model;
-                openWeatherTable = table;
-            }
-            case "WeatherApi" -> {
-                weatherApiModel = model;
-                weatherApiTable = table;
-            }
-            case "WeatherMeteo" -> {
-                weatherMeteoModel = model;
-                weatherMeteoTable = table;
-            }
+            case "OpenWeatherMap" -> openWeatherModel = model;
+            case "WeatherMeteo" -> weatherMeteoModel = model;
         }
-
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.add(new JLabel(apiName), BorderLayout.NORTH);
@@ -137,7 +115,6 @@ public class ForecastIO extends JFrame {
 
         Map<String, Map<String, String>> structuredForecast = new HashMap<>();
 
-        DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         DateTimeFormatter outputDate = DateTimeFormatter.ofPattern("dd MMM");
         DateTimeFormatter outputHour = DateTimeFormatter.ofPattern("HH:00");
 
