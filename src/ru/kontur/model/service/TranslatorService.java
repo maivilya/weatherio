@@ -8,6 +8,13 @@ import java.nio.charset.StandardCharsets;
 
 public class TranslatorService {
 
+    /**
+     * The method translates the city name into the required language using the API
+     * @param cityName city name
+     * @param sourceLang source language
+     * @param targetLang target language
+     * @return translated city name from source to target language
+     */
     public String translateCityName(String cityName, String sourceLang, String targetLang) throws Exception {
         String encodedCIty = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
         String url = String.format(
@@ -30,6 +37,12 @@ public class TranslatorService {
         return decodeUnicode(body.substring(start, end));
     }
 
+    /**
+     * Method allows you to decode Unicode characters
+     * in a string based on escape sequences
+     * @param input string for unicoding
+     * @return decoded string
+     */
     private String decodeUnicode(String input) {
         StringBuilder sb = new StringBuilder();
         int i = 0;
