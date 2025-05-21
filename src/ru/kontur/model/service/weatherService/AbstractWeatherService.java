@@ -14,6 +14,14 @@ public abstract class AbstractWeatherService {
 
     public abstract JSONObject getWeather(String locationName);
 
+    /**
+     * Abstract method for getting
+     * a json object by url (url will be different for each api)
+     * for weather data
+     *
+     * @param urlString URL
+     * @return parsed JSON object
+     */
     protected JSONObject fetchWeatherData(String urlString) {
         try {
             HttpURLConnection connection = fetchApiResponse(urlString);
@@ -31,6 +39,14 @@ public abstract class AbstractWeatherService {
         return null;
     }
 
+    /**
+     * Abstract method for getting
+     * a json object by url (url will be different for each api)
+     * for weather hourly forecast data
+     *
+     * @param urlString URL
+     * @return parsed JSON object
+     */
     protected JSONObject fetchHourlyForecastData(String urlString) {
         try {
             HttpURLConnection connection = fetchApiResponse(urlString);
@@ -47,10 +63,27 @@ public abstract class AbstractWeatherService {
         return null;
     }
 
+    /**
+     * Abstract method for parsing weather hourly forecast data
+     *
+     * @param jsonString json string that needs to be parsed
+     * @return parsed json string
+     */
     protected abstract JSONObject parseHourlyForecast(String jsonString) throws Exception;
 
+    /**
+     * Abstract method for parsing current weather data
+     *
+     * @param stringJSON json string that needs to be parsed
+     * @return parsed json string
+     */
     protected abstract JSONObject parseWeatherData(String stringJSON) throws Exception;
 
+    /**
+     * The method displays a panel with an error message
+     *
+     * @param message message that will be displayed
+     */
     protected void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(new JFrame(), message, "Ошибка", JOptionPane.ERROR_MESSAGE);
     }
@@ -58,6 +91,7 @@ public abstract class AbstractWeatherService {
     /**
      * Getting all weather information in JSON format,
      * which will be parsed by specific entry
+     *
      * @param connection current HttpURLConnection
      * @return full-information JSON object
      */
@@ -74,6 +108,7 @@ public abstract class AbstractWeatherService {
 
     /**
      * Getting HttpUrlConnection, sending a GET request to test the connection
+     *
      * @param urlString API connection link(url)
      * @return HttpURLConnection, otherwise, null
      */
