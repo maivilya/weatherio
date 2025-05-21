@@ -73,7 +73,6 @@ public abstract class AbstractWeatherService {
 
     /**
      * Abstract method for parsing current weather data
-     *
      * @param stringJSON json string that needs to be parsed
      * @return parsed json string
      */
