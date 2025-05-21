@@ -14,6 +14,7 @@ public class WeatherApiService extends AbstractWeatherService {
     /**
      * The method generates a URL for sending a request
      * to the API (current weather) and makes this request
+     *
      * @param locationName city name
      * @return JSON object for parsing
      */
@@ -25,6 +26,7 @@ public class WeatherApiService extends AbstractWeatherService {
 
     /**
      * Method for parsing weather hourly forecast data
+     *
      * @param jsonString json string that needs to be parsed
      * @return parsed weather hourly forecast data in the form of an
      * JSON object that can be obtained by keys
@@ -35,7 +37,8 @@ public class WeatherApiService extends AbstractWeatherService {
         JSONObject forecast = (JSONObject) resultJSONObj.get("forecast");
         if (forecast == null) throw new ParseException(ParseException.ERROR_UNEXPECTED_EXCEPTION, "Missing 'forecast'");
         JSONArray forecastday = (JSONArray) forecast.get("forecastday");
-        if (forecastday == null) throw new ParseException(ParseException.ERROR_UNEXPECTED_EXCEPTION, "Missing 'forecastday'");
+        if (forecastday == null)
+            throw new ParseException(ParseException.ERROR_UNEXPECTED_EXCEPTION, "Missing 'forecastday'");
 
         JSONArray hourlyForecast = new JSONArray();
 
@@ -65,6 +68,7 @@ public class WeatherApiService extends AbstractWeatherService {
 
     /**
      * Method for parsing current weather data
+     *
      * @param stringJSON json string that needs to be parsed
      * @return parsed weather data in the form of an JSON object
      * that can be obtained by keys

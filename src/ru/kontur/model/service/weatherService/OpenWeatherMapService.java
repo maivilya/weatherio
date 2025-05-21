@@ -3,6 +3,7 @@ package ru.kontur.model.service.weatherService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +18,7 @@ public class OpenWeatherMapService extends AbstractWeatherService {
     /**
      * The method generates a URL for sending a request
      * to the API (current weather) and makes this request
+     *
      * @param locationName city name
      * @return JSON object for parsing
      */
@@ -28,6 +30,7 @@ public class OpenWeatherMapService extends AbstractWeatherService {
     /**
      * The method generates a URL for sending a request
      * to the API (hourly forecast) and makes this request
+     *
      * @param locationName city name
      * @return JSON object for parsing
      */
@@ -38,6 +41,7 @@ public class OpenWeatherMapService extends AbstractWeatherService {
 
     /**
      * Method for parsing weather hourly forecast data
+     *
      * @param jsonString json string that needs to be parsed
      * @return parsed weather hourly forecast data in the form of an
      * JSON object that can be obtained by keys
@@ -70,6 +74,7 @@ public class OpenWeatherMapService extends AbstractWeatherService {
 
     /**
      * Method for parsing current weather data
+     *
      * @param stringJSON json string that needs to be parsed
      * @return parsed weather data in the form of an JSON object
      * that can be obtained by keys
@@ -94,6 +99,7 @@ public class OpenWeatherMapService extends AbstractWeatherService {
      * The method adds gaps in the data for OpenWeatherMap,
      * since the data from the API comes five days in advance,
      * but from the intervals from three hours (free version)
+     *
      * @param rawForecast forecast to be interpolated
      * @return interpolated forecast
      */
@@ -141,6 +147,7 @@ public class OpenWeatherMapService extends AbstractWeatherService {
     /**
      * The method converts an object (string, number)
      * to a real number
+     *
      * @param value value to be converted
      * @return converted value
      */
@@ -150,6 +157,7 @@ public class OpenWeatherMapService extends AbstractWeatherService {
 
     /**
      * The method reduces a real number to two decimal places
+     *
      * @param value value to be rounded
      * @return rounded value
      */

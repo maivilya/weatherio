@@ -17,6 +17,7 @@ public class WeatherMeteoService extends AbstractWeatherService {
     /**
      * Obtaining weather information for a specific city
      * that was received in a request from a user
+     *
      * @param locationName Location(city) requested by the user
      * @return JSON object with information on a specific city
      */
@@ -46,6 +47,13 @@ public class WeatherMeteoService extends AbstractWeatherService {
         return null;
     }
 
+    /**
+     * The method send a request to the API (hourly forecast)
+     * and makes this request
+     *
+     * @param locationName city name
+     * @return JSON object for parsing
+     */
     public JSONObject getHourlyForecast(String locationName) {
         JSONArray locationData = getLocationData(locationName);
         if (locationData == null) {
@@ -53,11 +61,17 @@ public class WeatherMeteoService extends AbstractWeatherService {
             System.out.println(CITY_NAME_ERROR_MESSAGE);
             return null;
         }
-
         String url = makeHourlyUrl(locationData);
         return fetchHourlyForecastData(url);
     }
 
+    /**
+     * The method generates a URL for sending a request
+     * to the API for an hourly weather forecast
+     *
+     * @param locationData JSONArray with basic location data (by city name)
+     * @return URL for hourly weather forecast
+     */
     private String makeHourlyUrl(JSONArray locationData) {
         JSONObject location = (JSONObject) locationData.get(0);
         return "https://api.open-meteo.com/v1/forecast?" +
@@ -67,6 +81,13 @@ public class WeatherMeteoService extends AbstractWeatherService {
                 "&timezone=Europe%2FMoscow";
     }
 
+    /**
+     * Method for parsing weather hourly forecast data
+     *
+     * @param jsonString json string that needs to be parsed
+     * @return parsed weather hourly forecast data in the form of an
+     * JSON object that can be obtained by keys
+     */
     @Override
     protected JSONObject parseHourlyForecast(String jsonString) throws Exception {
         JSONObject resultJSONObj = (JSONObject) PARSER.parse(jsonString);
@@ -94,6 +115,13 @@ public class WeatherMeteoService extends AbstractWeatherService {
         return result;
     }
 
+    /**
+     * The method generates a URL for sending a request
+     * to the API for a current weather
+     *
+     * @param locationData JSONArray with basic location data (by city name)
+     * @return URL for hourly weather forecast
+     */
     private String makeUrl(JSONArray locationData) {
         JSONObject location = (JSONObject) locationData.get(0);
         return "https://api.open-meteo.com/v1/forecast?" +
@@ -106,6 +134,13 @@ public class WeatherMeteoService extends AbstractWeatherService {
                 "&timezone=America%2FLos_Angeles";
     }
 
+    /**
+     * The method receives weather data for the current time
+     *
+     * @param locationName city name
+     * @return JSONArray with all location data for current weather
+     * (include latitude and longitude)
+     */
     private JSONArray getLocationData(String locationName) {
         locationName = locationName.replaceAll(" ", "+");
         String url = String.format(WEATHER_METEO_API_URL, locationName);
@@ -126,6 +161,13 @@ public class WeatherMeteoService extends AbstractWeatherService {
         return null;
     }
 
+    /**
+     * Method for parsing current weather data
+     *
+     * @param stringJSON json string that needs to be parsed
+     * @return parsed weather data in the form of an JSON object
+     * that can be obtained by keys
+     */
     @Override
     protected JSONObject parseWeatherData(String stringJSON) throws Exception {
         JSONObject resultJSONObj = (JSONObject) PARSER.parse(String.valueOf(stringJSON));
