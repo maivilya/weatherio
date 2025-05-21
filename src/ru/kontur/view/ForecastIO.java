@@ -53,6 +53,11 @@ public class ForecastIO extends JFrame {
         add(splitPane);
     }
 
+    /**
+     * The method creates a table with stubs for a specific API
+     * @param apiName API name
+     * @return prepared table with stubs
+     */
     private JPanel createApiTableFor(String apiName) {
         DefaultTableModel model = new DefaultTableModel();
         JTable table = new JTable(model);
@@ -84,6 +89,11 @@ public class ForecastIO extends JFrame {
         return panel;
     }
 
+    /**
+     * The method loads the weather forecast from the API
+     * and calls the method for filling the table
+     * @param location city name
+     */
     public void loadForecasts(String location) {
         OpenWeatherMapService openWeather = new OpenWeatherMapService();
         WeatherMeteoService weatherMeteo = new WeatherMeteoService();
@@ -109,6 +119,11 @@ public class ForecastIO extends JFrame {
         graphPanel.repaint();
     }
 
+    /**
+     * The method fills a table with an hourly weather forecast for five days in advance
+     * @param model table to fill out
+     * @param forecastData weather data
+     */
     private void fillHourlyForecast(DefaultTableModel model, JSONObject forecastData) {
         if (forecastData == null || !forecastData.containsKey("hourly")) return;
         JSONArray hourlyArray = (JSONArray) forecastData.get("hourly");
@@ -148,6 +163,12 @@ public class ForecastIO extends JFrame {
         }
     }
 
+    /**
+     * The method creates a chart using JFreeChart
+     * @param apiName API name to denote the graph
+     * @param forecastData weather data
+     * @return graph with weather data
+     */
     private ChartPanel createTemperatureChart(String apiName, JSONObject forecastData) {
         TimeSeries series = new TimeSeries(apiName + " Temperature");
 
