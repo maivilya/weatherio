@@ -74,6 +74,9 @@ public class WeatherIO extends JFrame {
         updateFavoriteList();
     }
 
+    /**
+     * The method adds all the main components to the window
+     */
     private void addComponents() {
         addTopPanel();
         addApiLabels();
@@ -81,6 +84,9 @@ public class WeatherIO extends JFrame {
         addAverageTemperatureText();
     }
 
+    /**
+     * The method adds API names to the window
+     */
     private void addApiLabels() {
         JPanel apiLabelsPanel = new JPanel(new GridLayout(1, 3, 10, 0));
         apiLabelsPanel.setBounds(0, 80, WIDTH, 30);
@@ -99,6 +105,14 @@ public class WeatherIO extends JFrame {
         add(apiLabelsPanel);
     }
 
+    /**
+     * The method adds weather information
+     * (temperature, weather icon, humidity and wind speed)
+     * using the API index
+     *
+     * @param index API index
+     * @return JPanel for one API with prepared information
+     */
     private JPanel createWeatherBlock(int index) {
         JPanel block = new JPanel();
         block.setLayout(new BoxLayout(block, BoxLayout.Y_AXIS));
@@ -157,6 +171,9 @@ public class WeatherIO extends JFrame {
         return block;
     }
 
+    /**
+     * The method creates blocks with weather information from all three API
+     */
     private void addWeatherBlocks() {
         JPanel weatherPanel = new JPanel();
         weatherPanel.setLayout(new GridLayout(1, 3, 10, 0));
@@ -173,6 +190,11 @@ public class WeatherIO extends JFrame {
         add(weatherPanel);
     }
 
+    /**
+     * The method adds a top panel
+     * (search field, button and favorite locations,
+     * add to favorites button and forecast log)
+     */
     private void addTopPanel() {
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
@@ -226,6 +248,11 @@ public class WeatherIO extends JFrame {
         add(topPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * The method updates the list from the database
+     * to display current data from the list
+     * with selected locations when adding or removing from this list
+     */
     private void updateFavoriteList() {
         try {
             List<String> favorites = favoriteService.getFavorites();
@@ -238,6 +265,11 @@ public class WeatherIO extends JFrame {
         }
     }
 
+    /**
+     * The method displays a list with selected locations
+     * obtained from the database with the ability
+     * to quickly access by name and delete from the list and database
+     */
     private void showFavoritesList() {
         JPopupMenu popupMenu = new JPopupMenu();
         for (int i = 0; i < listModel.size(); i++) {
@@ -274,6 +306,10 @@ public class WeatherIO extends JFrame {
         popupMenu.show(btnShowFavorites, 0, btnShowFavorites.getHeight());
     }
 
+    /**
+     * The method allows you to open a new window with an hourly weather forecast
+     * from the API for several days in advance, as well as plotting a graph for clarity
+     */
     private void showJournalList() {
         JPopupMenu popupMenu = new JPopupMenu();
 
@@ -299,6 +335,12 @@ public class WeatherIO extends JFrame {
         popupMenu.show(btnShowFavorites, 100, btnShowFavorites.getHeight());
     }
 
+    /**
+     * The method removes the location from the database
+     * and updates the list rendering to display the latest data
+     *
+     * @param cityName city name to be removed from the list
+     */
     private void removeCityFromFavorites(String cityName) {
         try {
             favoriteService.removeCityFromFavorites(cityName);
@@ -308,6 +350,9 @@ public class WeatherIO extends JFrame {
         }
     }
 
+    /**
+     * The method adds a block with the average temperature for all three API
+     */
     private void addAverageTemperatureText() {
         JPanel averagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         averagePanel.setBounds(0, 530, WIDTH, 40); // Можно подвинуть выше/ниже по вкусу
@@ -319,6 +364,12 @@ public class WeatherIO extends JFrame {
         add(averagePanel);
     }
 
+    /**
+     * The method loads the required icon from the resource folder
+     *
+     * @param relativePath path to the required icon
+     * @return required icon
+     */
     private ImageIcon loadImage(String relativePath) {
         try {
             return new ImageIcon(ImageIO.read(getClass().getClassLoader().getResourceAsStream(relativePath)));
@@ -328,24 +379,40 @@ public class WeatherIO extends JFrame {
         }
     }
 
+    /**
+     * The method receives weather data from the API
+     * and executes the renderWeatherData method
+     *
+     * @param cityName city name
+     */
     private void getWeather(String cityName) {
         if (cityName.replaceAll("\\s", "").isEmpty()) return;
-
         JSONObject[] weatherData = fetchWeatherData(cityName);
         renderWeatherData(weatherData);
     }
 
+    /**
+     * The method receives data from three APIs into different JSONObjects
+     * and returns an array of three components as a JSONObject
+     *
+     * @param cityName city name
+     * @return array with three JSONObject
+     */
     private JSONObject[] fetchWeatherData(String cityName) {
         JSONObject data1 = WeatherApp.getWeatherFromService(weatherMeteoService, cityName);
         JSONObject data2 = WeatherApp.getWeatherFromService(weatherApiService, cityName);
         JSONObject data3 = WeatherApp.getWeatherFromService(openWeatherMapService, cityName);
-
         if (data1 == null && data2 == null && data3 == null) {
             throw new IllegalArgumentException("Не удалось получить данные о погоде ни из одного источника.");
         }
         return new JSONObject[]{data1, data2, data3};
     }
 
+    /**
+     * The method updates weather icons based on currently received data
+     *
+     * @param weatherCondition weather condition
+     */
     private void setWeatherIcons(String weatherCondition) {
         String resource = switch (weatherCondition) {
             case "Ясно" -> CLEAR_RESOURCE_PATH;
@@ -354,7 +421,6 @@ public class WeatherIO extends JFrame {
             case "Снег" -> SNOW_RESOURCE_PATH;
             default -> null;
         };
-
         if (resource != null) {
             ImageIcon icon = loadImage(resource);
             apiWeatherConditionImage1.setIcon(icon);
@@ -363,6 +429,11 @@ public class WeatherIO extends JFrame {
         }
     }
 
+    /**
+     * Method for updating data in all blocks with weather conditions
+     *
+     * @param weatherData array with JSONObjects
+     */
     private void renderWeatherData(JSONObject[] weatherData) {
         JSONObject d1 = weatherData[0];
         JSONObject d2 = weatherData[1];
