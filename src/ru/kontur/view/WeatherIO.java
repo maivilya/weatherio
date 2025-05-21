@@ -312,16 +312,8 @@ public class WeatherIO extends JFrame {
      */
     private void showJournalList() {
         JPopupMenu popupMenu = new JPopupMenu();
-
-        JMenuItem journal1Item = new JMenuItem("История");
-        journal1Item.addActionListener(e -> {
-            HistoryIO historyWindow = new HistoryIO();
-            historyWindow.setVisible(true);
-        });
-        popupMenu.add(journal1Item);
-
-        JMenuItem journal2Item = new JMenuItem("Прогноз");
-        journal2Item.addActionListener(e -> {
+        JMenuItem journalItem = new JMenuItem("Прогноз");
+        journalItem.addActionListener(e -> {
             ForecastIO forecastWindow = new ForecastIO();
             forecastWindow.setVisible(true);
             try {
@@ -330,8 +322,7 @@ public class WeatherIO extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
-        popupMenu.add(journal2Item);
-
+        popupMenu.add(journalItem);
         popupMenu.show(btnShowFavorites, 100, btnShowFavorites.getHeight());
     }
 
