@@ -9,20 +9,26 @@ public class WeatherApiService extends AbstractWeatherService {
 
     private static final String WEATHER_API_URL = "http://api.weatherapi.com/v1/current.json?key=%s&q=%s&lang=ru";
     private static final String WEATHER_API_KEY = "41582deb5d84437183f81730251303";
-    private static final String WEATHER_API_HOURLY_URL = "http://api.weatherapi.com/v1/forecast.json?key=%s&q=%s&lang=ru&hours=72";
     private static final JSONParser PARSER = new JSONParser();
 
+    /**
+     * The method generates a URL for sending a request
+     * to the API (current weather) and makes this request
+     * @param locationName city name
+     * @return JSON object for parsing
+     */
     @Override
     public JSONObject getWeather(String locationName) {
         String url = String.format(WEATHER_API_URL, WEATHER_API_KEY, locationName);
         return fetchWeatherData(url);
     }
 
-    public JSONObject getHourlyForecast(String locationName) {
-        String url = String.format(WEATHER_API_HOURLY_URL, WEATHER_API_KEY, locationName);
-        return fetchHourlyForecastData(url);
-    }
-
+    /**
+     * Method for parsing weather hourly forecast data
+     * @param jsonString json string that needs to be parsed
+     * @return parsed weather hourly forecast data in the form of an
+     * JSON object that can be obtained by keys
+     */
     @Override
     protected JSONObject parseHourlyForecast(String jsonString) throws Exception {
         JSONObject resultJSONObj = (JSONObject) PARSER.parse(jsonString);
@@ -57,6 +63,12 @@ public class WeatherApiService extends AbstractWeatherService {
         return result;
     }
 
+    /**
+     * Method for parsing current weather data
+     * @param stringJSON json string that needs to be parsed
+     * @return parsed weather data in the form of an JSON object
+     * that can be obtained by keys
+     */
     @Override
     protected JSONObject parseWeatherData(String stringJSON) throws Exception {
         JSONObject resultJSONObj = (JSONObject) PARSER.parse(stringJSON);
