@@ -10,7 +10,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.kontur.model.service.weatherService.OpenWeatherMapService;
 import ru.kontur.model.service.weatherService.WeatherMeteoService;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -55,6 +54,7 @@ public class ForecastIO extends JFrame {
 
     /**
      * The method creates a table with stubs for a specific API
+     *
      * @param apiName API name
      * @return prepared table with stubs
      */
@@ -92,6 +92,7 @@ public class ForecastIO extends JFrame {
     /**
      * The method loads the weather forecast from the API
      * and calls the method for filling the table
+     *
      * @param location city name
      */
     public void loadForecasts(String location) {
@@ -121,7 +122,8 @@ public class ForecastIO extends JFrame {
 
     /**
      * The method fills a table with an hourly weather forecast for five days in advance
-     * @param model table to fill out
+     *
+     * @param model        table to fill out
      * @param forecastData weather data
      */
     private void fillHourlyForecast(DefaultTableModel model, JSONObject forecastData) {
@@ -165,7 +167,8 @@ public class ForecastIO extends JFrame {
 
     /**
      * The method creates a chart using JFreeChart
-     * @param apiName API name to denote the graph
+     *
+     * @param apiName      API name to denote the graph
      * @param forecastData weather data
      * @return graph with weather data
      */
