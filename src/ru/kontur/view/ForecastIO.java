@@ -99,14 +99,8 @@ public class ForecastIO extends JFrame {
         OpenWeatherMapService openWeather = new OpenWeatherMapService();
         WeatherMeteoService weatherMeteo = new WeatherMeteoService();
 
-        System.out.println("Запрос к OpenWeather...");
         JSONObject openForecast = openWeather.getHourlyForecast(location);
-        System.out.println("OpenWeather JSON: " + openForecast);
-
-        System.out.println("Запрос к WeatherMeteo...");
         JSONObject meteoForecast = weatherMeteo.getHourlyForecast(location);
-        System.out.println("WeatherMeteo JSON: " + meteoForecast);
-
         fillHourlyForecast(openWeatherModel, openForecast);
         fillHourlyForecast(weatherMeteoModel, meteoForecast);
 
