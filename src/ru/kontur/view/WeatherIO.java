@@ -7,6 +7,7 @@ import ru.kontur.model.service.TranslatorService;
 import ru.kontur.model.service.weatherService.OpenWeatherMapService;
 import ru.kontur.model.service.weatherService.WeatherApiService;
 import ru.kontur.model.service.weatherService.WeatherMeteoService;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -32,6 +33,8 @@ public class WeatherIO extends JFrame {
     private static final String RAIN_RESOURCE_PATH = "assets/rain.png";
     private static final String SNOW_RESOURCE_PATH = "assets/snow.png";
     private static final String JOURNAL_RESOURCE_PATH = "assets/journal.png";
+    private static final String SUN_RESOURCE_PATH = "assets/sun.png";
+    private static final String MOON_RESOURCE_PATH = "assets/moon.png";
 
     // Basic information fields
     private static JTextField searchTextField;
@@ -54,6 +57,11 @@ public class WeatherIO extends JFrame {
 
     // Translator for city names
     private static final TranslatorService translator = new TranslatorService();
+
+    // To change window theme
+    private JButton themeToggleButton;
+    private boolean isDayMode = true;
+    private JPanel weatherBlock1, weatherBlock2, weatherBlock3;
 
     public WeatherIO() {
         favoriteService = new FavoriteService();
@@ -179,14 +187,13 @@ public class WeatherIO extends JFrame {
         weatherPanel.setLayout(new GridLayout(1, 3, 10, 0));
         weatherPanel.setBounds(0, 120, WIDTH, 400);
 
-        JPanel block1 = createWeatherBlock(1);
-        JPanel block2 = createWeatherBlock(2);
-        JPanel block3 = createWeatherBlock(3);
+        weatherBlock1 = createWeatherBlock(1);
+        weatherBlock2 = createWeatherBlock(2);
+        weatherBlock3 = createWeatherBlock(3);
 
-        weatherPanel.add(block1);
-        weatherPanel.add(block2);
-        weatherPanel.add(block3);
-
+        weatherPanel.add(weatherBlock1);
+        weatherPanel.add(weatherBlock2);
+        weatherPanel.add(weatherBlock3);
         add(weatherPanel);
     }
 
@@ -242,10 +249,55 @@ public class WeatherIO extends JFrame {
                 }
             }
         });
-
         topPanel.add(btnAddCity);
         topPanel.setBounds(0, 0, WIDTH, 70);
+
+        themeToggleButton = new JButton(loadImage(MOON_RESOURCE_PATH));
+        themeToggleButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        themeToggleButton.setBackground(Color.WHITE);
+        themeToggleButton.setBorder(BorderFactory.createEmptyBorder());
+        themeToggleButton.addActionListener(e -> toggleTheme());
+        topPanel.add(themeToggleButton);
         add(topPanel, BorderLayout.NORTH);
+    }
+
+    /**
+     * The method changes the screen background and text color
+     */
+    private void toggleTheme() {
+        isDayMode = !isDayMode;
+        themeToggleButton.setIcon(loadImage(isDayMode ? MOON_RESOURCE_PATH : SUN_RESOURCE_PATH));
+
+        Color bgColor = isDayMode ? Color.WHITE : Color.GRAY;
+        Color textColor = isDayMode ? Color.BLACK : Color.WHITE;
+        getContentPane().setBackground(bgColor);
+        for (Component component : getContentPane().getComponents()) {
+            if (component instanceof JPanel panel) {
+                panel.setBackground(bgColor);
+            }
+        }
+
+        if (weatherBlock1 != null) weatherBlock1.setBackground(bgColor);
+        if (weatherBlock2 != null) weatherBlock2.setBackground(bgColor);
+        if (weatherBlock3 != null) weatherBlock3.setBackground(bgColor);
+
+        updateWeatherTextColor(weatherBlock1, textColor);
+        updateWeatherTextColor(weatherBlock2, textColor);
+        updateWeatherTextColor(weatherBlock3, textColor);
+    }
+
+    /**
+     * The method changes the text color of the panel
+     *
+     * @param panel     panel whose color needs to be changed
+     * @param textColor color to change to
+     */
+    private void updateWeatherTextColor(JPanel panel, Color textColor) {
+        for (Component component : panel.getComponents()) {
+            if (component instanceof JLabel label) {
+                label.setForeground(textColor);
+            }
+        }
     }
 
     /**
