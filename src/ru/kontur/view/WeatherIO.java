@@ -363,9 +363,7 @@ public class WeatherIO extends JFrame {
      * from the API for several days in advance, as well as plotting a graph for clarity
      */
     private void showJournalList() {
-        JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem journalItem = new JMenuItem("Прогноз");
-        journalItem.addActionListener(e -> {
+
             ForecastIO forecastWindow = new ForecastIO();
             forecastWindow.setVisible(true);
             try {
@@ -373,9 +371,7 @@ public class WeatherIO extends JFrame {
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
-        });
-        popupMenu.add(journalItem);
-        popupMenu.show(btnShowFavorites, 100, btnShowFavorites.getHeight());
+        
     }
 
     /**
