@@ -11,6 +11,8 @@ import ru.kontur.model.service.weatherService.WeatherMeteoService;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
@@ -326,34 +328,61 @@ public class WeatherIO extends JFrame {
         JPopupMenu popupMenu = new JPopupMenu();
         for (int i = 0; i < listModel.size(); i++) {
             String city = listModel.getElementAt(i);
-            JMenuItem menuItem = new JMenuItem(city);
-            JPanel panel = new JPanel();
-            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
+            JPanel panel = new JPanel(new BorderLayout());
+            panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+            panel.setMaximumSize(new Dimension(300, 30));
 
             JLabel cityLabel = new JLabel(city);
-            cityLabel.setPreferredSize(new Dimension(50, 30));
-            panel.add(cityLabel);
+            cityLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
             JButton removeButton = new JButton("X");
-            removeButton.setPreferredSize(new Dimension(15, 15));
+            removeButton.setPreferredSize(new Dimension(20, 20));
             removeButton.setMargin(new Insets(0, 0, 0, 0));
-            removeButton.addActionListener(e -> removeCityFromFavorites(city));
+            removeButton.setFocusPainted(false);
+            removeButton.addActionListener(e -> {
+                removeCityFromFavorites(city);
+                popupMenu.setVisible(false);
+            });
 
-            panel.add(Box.createHorizontalStrut(10));
-            panel.add(removeButton);
+            panel.add(cityLabel, BorderLayout.CENTER);
+            panel.add(removeButton, BorderLayout.EAST);
 
-            menuItem.addActionListener(e -> {
-                try {
-                    getWeather(translator.translateCityName(city, "ru", "en"));
-                    searchTextField.setText(city);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
+            panel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    panel.setBackground(new Color(220, 240, 255));
+                    panel.setOpaque(true);
+                    panel.repaint();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    panel.setBackground(null);
+                    panel.setOpaque(true);
+                    panel.repaint();
+                }
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (!SwingUtilities.isDescendingFrom(e.getComponent(), removeButton)) {
+                        try {
+                            popupMenu.setVisible(false);
+                            getWeather(translator.translateCityName(city, "ru", "en"));
+                            searchTextField.setText(city);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
             });
-            menuItem.setLayout(new BorderLayout());
-            menuItem.add(panel, BorderLayout.CENTER);
-
-            popupMenu.add(menuItem);
+            removeButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    e.consume();
+                }
+            });
+            popupMenu.add(panel);
         }
         popupMenu.show(btnShowFavorites, 0, btnShowFavorites.getHeight());
     }
@@ -364,14 +393,14 @@ public class WeatherIO extends JFrame {
      */
     private void showJournalList() {
 
-            ForecastIO forecastWindow = new ForecastIO();
-            forecastWindow.setVisible(true);
-            try {
-                forecastWindow.loadForecasts(translator.translateCityName(searchTextField.getText(), "ru", "en"));
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        
+        ForecastIO forecastWindow = new ForecastIO();
+        forecastWindow.setVisible(true);
+        try {
+            forecastWindow.loadForecasts(translator.translateCityName(searchTextField.getText(), "ru", "en"));
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
     }
 
     /**
