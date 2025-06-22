@@ -33,7 +33,6 @@ public class WeatherMeteoService extends AbstractWeatherService {
         try {
             HttpURLConnection connection = fetchApiResponse(url);
             if (connection.getResponseCode() != 200) {
-                showErrorMessage(CONNECTION_ERROR_MESSAGE);
                 System.out.println(CONNECTION_ERROR_MESSAGE);
                 return null;
             }

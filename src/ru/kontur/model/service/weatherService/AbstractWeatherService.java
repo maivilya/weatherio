@@ -27,7 +27,6 @@ public abstract class AbstractWeatherService {
         try {
             HttpURLConnection connection = fetchApiResponse(urlString);
             if (connection == null || connection.getResponseCode() != 200) {
-                showErrorMessage(CONNECTION_ERROR_MESSAGE);
                 System.out.println(CONNECTION_ERROR_MESSAGE);
                 return null;
             }
@@ -52,7 +51,6 @@ public abstract class AbstractWeatherService {
         try {
             HttpURLConnection connection = fetchApiResponse(urlString);
             if (connection == null || connection.getResponseCode() != 200) {
-                showErrorMessage(CONNECTION_ERROR_MESSAGE);
                 System.out.println(CONNECTION_ERROR_MESSAGE);
                 return null;
             }
